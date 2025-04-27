@@ -1,5 +1,5 @@
-import { MaxVelocity } from '/configs/controller_encodings.js';
-import { impulse as ImpulseUrl } from '/configs/audio_asset_map.js';
+import { MaxVelocity } from '../configs/controller_encodings.js';
+import { impulse as ImpulseUrl } from '../configs/audio_asset_map.js';
 
 export class AudioContextManager {
   ctx;

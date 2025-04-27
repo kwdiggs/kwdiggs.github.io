@@ -1,4 +1,4 @@
-const audioPath = "assets/";
+const audioPath = "../assets/";
 
 export const kick = `${audioPath}01_kick.wav`;
 export const snare = `${audioPath}02_snare.wav`;

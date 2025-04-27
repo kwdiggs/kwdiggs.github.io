@@ -1,7 +1,7 @@
-import { BufferManager } from '/utilities/buffer_manager.js';
-import { AudioContextManager } from '/utilities/audio_ctx_manager.js';
-import { buildVisualizer as Visualizer } from '/utilities/visualizer.js';
-import { AudioUrls } from '/configs/audio_asset_map.js';
+import { BufferManager } from './buffer_manager.js';
+import { AudioContextManager } from './audio_ctx_manager.js';
+import { buildVisualizer as Visualizer } from './visualizer.js';
+import { AudioUrls } from '../configs/audio_asset_map.js';
 import { 
   LPASS,
   HPASS,

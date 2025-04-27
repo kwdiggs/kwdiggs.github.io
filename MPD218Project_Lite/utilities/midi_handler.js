@@ -1,5 +1,5 @@
-import { COMMAND_CODES, KNOB_ENCODING, PAD_ENCODING } from '/configs/controller_encodings.js';
-import { EventName } from '/configs/custom_events.js';
+import { COMMAND_CODES, KNOB_ENCODING, PAD_ENCODING } from '../configs/controller_encodings.js';
+import { EventName } from '../configs/custom_events.js';
 
 
 let siteUserActivated = false;

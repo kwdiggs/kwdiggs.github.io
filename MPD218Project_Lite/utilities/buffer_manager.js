@@ -1,4 +1,4 @@
-import { AudioUrls } from '/configs/audio_asset_map.js';
+import { AudioUrls } from '../configs/audio_asset_map.js';
 
 export class BufferManager {
   ctx;
