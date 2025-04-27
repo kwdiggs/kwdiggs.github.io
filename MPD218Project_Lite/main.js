@@ -1,8 +1,8 @@
-import * as Animations from '/configs/animations.js';
-import * as SvgBuilder from '/utilities/svg_builder.js';
-import * as AttractMode from '/attract_mode.js';
-import { EventName } from '/configs/custom_events.js';
-import { FX_PAD_A, FX_PAD_B, KNOB_NAME } from '/configs/controller_encodings.js';
+import * as Animations from './configs/animations.js';
+import * as SvgBuilder from './utilities/svg_builder.js';
+import * as AttractMode from './attract_mode.js';
+import { EventName } from './configs/custom_events.js';
+import { FX_PAD_A, FX_PAD_B, KNOB_NAME } from './configs/controller_encodings.js';
 
 
 let midiDeviceUserActivated = false;

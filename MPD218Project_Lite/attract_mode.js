@@ -1,5 +1,5 @@
-import * as Animations from '/configs/animations.js';
-import { FX_PAD_A, FX_PAD_B } from '/configs/controller_encodings.js';
+import * as Animations from './configs/animations.js';
+import { FX_PAD_A, FX_PAD_B } from './configs/controller_encodings.js';
 
 
 export function start() {
