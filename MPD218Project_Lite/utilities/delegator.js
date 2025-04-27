@@ -11,8 +11,8 @@ import {
   GAIN,
   FX_PAD_A,
   FX_PAD_B
-} from '/configs/controller_encodings.js';
-import { EventName } from '/configs/custom_events.js';
+} from '../configs/controller_encodings.js';
+import { EventName } from '../configs/custom_events.js';
 
 
 let audioCtx; 
