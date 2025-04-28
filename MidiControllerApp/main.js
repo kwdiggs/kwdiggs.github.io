@@ -63,48 +63,38 @@ function buildButtons(quantity) {
     button.setAttribute("id", "pad-" + i);
     container.appendChild(button);
 
-    button.addEventListener("mousedown", (e) => {
-      activeButtons[i  - 1] =  true;
-      document.dispatchEvent(new CustomEvent(EventName.PadChange, {
+    const padOn = new CustomEvent(EventName.PadChange, {
+        detail: {
+          padId: i,
+          isOn: true,
+          velocity: 127,
+        }
+    });
+
+    const padOff = new CustomEvent(EventName.PadChange, {
       detail: {
         padId: i,
-        isOn: true,
-        velocity: 127,
+        isOn: false,
+        velocity: 0,
       }
-      }));
     });
 
-    button.addEventListener("mouseup", (e) => {
+    const turnOn = function() {
+      activeButtons[i - 1] = true;
+      document.dispatchEvent(padOn);
+    };
+
+    const turnOff = function() {
       if (!activeButtons[i - 1]) {
         return;
       }
-
-      document.dispatchEvent(new CustomEvent(EventName.PadChange, {
-        detail: {
-          padId: i,
-          isOn: false,
-          velocity: 0,
-        }
-      }));
-
+      document.dispatchEvent(padOff);
       activeButtons[i - 1] = false;
-    });
+    };
 
-    button.addEventListener("mouseleave", () => {
-      if (!activeButtons[i - 1]) {
-        return;
-      }
-
-      document.dispatchEvent(new CustomEvent(EventName.PadChange, {
-        detail: {
-          padId: i,
-          isOn: false,
-          velocity: 0,
-        }
-      }));
-
-      activeButtons[i - 1] = false;
-    });
+    button.addEventListener("pointerdown", turnOn);
+    button.addEventListener("pointerup", turnOff);;
+    button.addEventListener("mouseleave", turnOff);
   }
 }
 
