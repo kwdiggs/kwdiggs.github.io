@@ -1,5 +1,5 @@
-import { COMMAND_CODES, KNOB_ENCODING, PAD_ENCODING } from '../configs/controller_encodings.js';
-import { EventName } from '../configs/custom_events.js';
+import { COMMAND_CODES, KNOB_ENCODING, PAD_ENCODING, KEYBOARD_ENCODING} from '/configs/controller_encodings.js';
+import { EventName } from '/configs/custom_events.js';
 
 
 let siteUserActivated = false;
@@ -10,7 +10,10 @@ function initMidi() {
     (error) => console.error
   );
 
-  const activate = (() => siteUserActivated = true);
+  const activate = (() => {
+    siteUserActivated = true;
+    handleKeydownAndKeyup();
+  });
   const options = { once: true };
   document.addEventListener(EventName.UserActivated, activate, options);
 };
@@ -25,14 +28,48 @@ function useAccess(access) {
   });
 }
 
+function handleKeydownAndKeyup() {
+  document.addEventListener("keydown", (e) =>  {
+    if (e.repeat) {
+      return;
+    }
+
+    if (!KEYBOARD_ENCODING.hasOwnProperty(e.key)) {
+      return;
+    }
+
+    document.dispatchEvent(new CustomEvent(EventName.PadChange, {
+      detail: {
+        padId: KEYBOARD_ENCODING[e.key],
+        isOn: true,
+        velocity: 127,
+      }
+    }));
+  });
+
+  document.addEventListener("keyup", (e) =>  {
+    if (!KEYBOARD_ENCODING.hasOwnProperty(e.key)) {
+      return;
+    }
+
+    document.dispatchEvent(new CustomEvent(EventName.PadChange, {
+        detail: {
+          padId: KEYBOARD_ENCODING[e.key],
+          isOn: false,
+          velocity: 0,
+        }
+      }));
+  });
+}
+
 function handleConnectionEvent(e) {
   const { manufacturer, name, state } = e.port;
   const midiInputs = e.target.inputs;
 
   if (manufacturer !== "Akai") {
     return;
-  } 
-  
+  }
+
   if (state === "connected") {
     midiInputs.forEach(midiInput => midiInput.onmidimessage = handleMidiMessage);
   }
@@ -83,8 +120,8 @@ function onKnobChange(knobId, velocity) {
 }
 
 function onPadChange(id, isOn, velocity) {
-  let e = new CustomEvent(EventName.PadChange, { 
-    detail: { 
+  let e = new CustomEvent(EventName.PadChange, {
+    detail: {
       padId: id,
       isOn: isOn,
       velocity: velocity,

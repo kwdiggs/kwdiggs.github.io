@@ -50,6 +50,25 @@ export const PAD_ENCODING = {
   16: 4
 }
 
+export const KEYBOARD_ENCODING = {
+  '7': 1,
+  '8': 2,
+  '9': 3,
+  '0': 4,
+  'u': 5,
+  'i': 6,
+  'o': 7,
+  'p': 8,
+  'j': 9,
+  'k': 10,
+  'l': 11,
+  ';': 12,
+  'm': 13,
+  ',': 14,
+  '.': 15,
+  '/': 16,
+}
+
 export const LPASS = 1;
 export const HPASS = 2;
 export const PANNING = 3;
