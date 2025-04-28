@@ -10,6 +10,9 @@ html {
 
 body {
   background-color: black;
+}
+
+button {
   touch-action: manipulation;
 }
 
