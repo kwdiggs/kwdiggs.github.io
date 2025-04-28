@@ -6,6 +6,7 @@ import { FX_PAD_A, FX_PAD_B, KNOB_NAME } from './configs/controller_encodings.js
 
 
 let midiDeviceUserActivated = false;
+let activeButtons = Array(16).fill(false);
 
 function init() {
   populateDom();
@@ -55,12 +56,55 @@ function buildPads(quantity) {
 
 function buildButtons(quantity) {
   const container = document.querySelector(".pad-container");
-  
+
   for (let i = 1; i <= quantity; i++) {
     const button = document.createElement("button");
     button.classList.add("pad");
     button.setAttribute("id", "pad-" + i);
     container.appendChild(button);
+
+    button.addEventListener("mousedown", (e) => {
+      activeButtons[i  - 1] =  true;
+      document.dispatchEvent(new CustomEvent(EventName.PadChange, {
+      detail: {
+        padId: i,
+        isOn: true,
+        velocity: 127,
+      }
+      }));
+    });
+
+    button.addEventListener("mouseup", (e) => {
+      if (!activeButtons[i - 1]) {
+        return;
+      }
+
+      document.dispatchEvent(new CustomEvent(EventName.PadChange, {
+        detail: {
+          padId: i,
+          isOn: false,
+          velocity: 0,
+        }
+      }));
+
+      activeButtons[i - 1] = false;
+    });
+
+    button.addEventListener("mouseleave", () => {
+      if (!activeButtons[i - 1]) {
+        return;
+      }
+
+      document.dispatchEvent(new CustomEvent(EventName.PadChange, {
+        detail: {
+          padId: i,
+          isOn: false,
+          velocity: 0,
+        }
+      }));
+
+      activeButtons[i - 1] = false;
+    });
   }
 }
 
