@@ -93,8 +93,8 @@ function buildButtons(quantity) {
     };
 
     button.addEventListener("pointerdown", turnOn);
-    button.addEventListener("pointerup", turnOff);;
-    button.addEventListener("mouseleave", turnOff);
+    button.addEventListener("pointerup", turnOff);
+    button.addEventListener("pointerleave", turnOff);
   }
 }
 
