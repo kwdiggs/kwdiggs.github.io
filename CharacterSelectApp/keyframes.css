@@ -1,0 +1,55 @@
+@keyframes bg-scroll {
+  0% {
+    background-position : 0px -192px;
+  }
+  100% {
+    background-position : -192px 0px;
+  }
+}
+
+@keyframes animate-char {
+    0% {
+        margin-left: 0px;
+        margin-bottom: 0px;
+    }
+    25% {
+        margin-left: 4px;
+        margin-bottom: 5px;
+    }
+    50% {
+        margin-left: 8px;
+        margin-bottom: 15px;
+    }
+    75% {
+        margin-left: 12px;
+        margin-bottom: 5px;
+    }
+    100% {
+        margin-left: 15px;
+        margin-bottom: 0px;
+    }
+}
+
+@keyframes flashy-border {
+    0% {
+        border-color: blue;
+    }
+    33% {
+        border-color: green;
+    }
+    66% {
+        border-color: orange;
+    }
+    100% {
+        border-color: red;
+    }
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(100vh);
+    }
+}

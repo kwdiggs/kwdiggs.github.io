@@ -1,0 +1,95 @@
+@import "keyframes.css";
+
+body,
+html {
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+}
+
+.character-select-title {
+    padding: 12px 0;
+    background-color: rgb(255,93,93,0.4);
+    font-size: 1.5rem;
+}
+
+.title {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.content {
+    position: absolute;
+    bottom: 0;
+    right: 50%;
+    left: 50%;
+}
+
+.platform {
+    font-size: 8rem;
+    text-align: center;
+    vertical-align: center;
+    color: black;
+    animation: animate-char 0.5s  alternate infinite;
+}
+
+.letter-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+
+    padding-top: 10px;
+    border-top: 1px solid black;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.letter {
+    width: 50px;
+    height: 60px;
+    margin: 10px;
+    cursor: pointer;
+    color: black;
+    border: 2px solid black;
+    background: white;
+    font-weight: bold;
+    opacity: 0.9;
+}
+
+.letter-span {
+    pointer-events: none;
+}
+
+.flex-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.flashy-border {
+    animation: flashy-border 0.25s linear infinite;
+}
+
+.scrolling-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("android-chrome-192x192.png");
+    opacity: 0.5;
+    border: 4px solid black;
+    animation: bg-scroll 2s linear infinite;
+    z-index: -1;
+}
