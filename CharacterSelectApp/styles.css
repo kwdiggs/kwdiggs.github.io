@@ -76,8 +76,13 @@ button {
     cursor: pointer;
     position: absolute;
     right: 1px;
-    top 1px;
+    top: 1px;
     padding: 10px;
+    border-radius: 0;
+}
+
+button img {
+    pointer-events: none;
 }
 
 .icon {
