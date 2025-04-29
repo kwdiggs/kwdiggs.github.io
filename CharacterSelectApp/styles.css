@@ -20,6 +20,7 @@ body {
     padding: 12px 0;
     background-color: rgb(255,93,93,0.4);
     font-size: 1.5rem;
+    font-weight: bold;
 }
 
 .title {
@@ -59,6 +60,7 @@ body {
     height: 60px;
     margin: 10px;
     cursor: pointer;
+    user-select: none;
     color: black;
     border: 2px solid black;
     background: white;
@@ -68,6 +70,18 @@ body {
 
 .letter-span {
     pointer-events: none;
+}
+
+button {
+    cursor: pointer;
+    position: absolute;
+    right: 1px;
+    top 1px;
+    padding: 10px;
+}
+
+.icon {
+    display: block;
 }
 
 .flex-centered {
