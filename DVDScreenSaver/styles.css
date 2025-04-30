@@ -5,7 +5,7 @@ body {
     overflow: hidden;
 }
 
-.circle {
+.ball {
     width: 20vh;
     height: 20vh;
     border: 1px solid blue;;
@@ -19,11 +19,24 @@ body {
     animation: bounce 8s linear alternate infinite;
 }
 
-.text {
+.ball-text {
     font-weight: bold;
     font-style: italic;
     font-size: 9vh;
     color: white;
+}
+
+.text-container {
+    position: absolute;
+    top:0;
+    width: 100vw;
+    text-align: center;
+}
+
+.message {
+    width: fit-content;
+    color: white;
+    font-size: 2rem;
 }
 
 @keyframes bounce {
