@@ -7,5 +7,5 @@ function toggleMessage() {
 }
 
 toggleMessage();
-setTimeout(toggleMessage, 8500);
-setTimeout(toggleMessage, 14000);
+setTimeout(toggleMessage, 7000);
+setTimeout(toggleMessage, 10000);
