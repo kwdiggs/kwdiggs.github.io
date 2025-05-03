@@ -15,6 +15,7 @@ function processGuess(letter) {
     solved = assessSolved();
 
     if(solved) {
+        gameOver = true;
         showEndingModal(true);
         return;
     }
@@ -35,6 +36,7 @@ function processWrongGuess() {
 }
 
 const letters = document.getElementsByClassName("letter");
+
 const onLetterClick = (e) => {
     if (gameOver) {
         return;
@@ -55,6 +57,5 @@ for (let l of letters) {
      l.addEventListener("click", onLetterClick);
 }
 
-// showEndingModal(false);
 
 

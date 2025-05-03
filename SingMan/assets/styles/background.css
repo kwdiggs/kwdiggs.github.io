@@ -1,0 +1,33 @@
+@meda (min-width: 200px) and (max-width: 600px) {
+    img {
+        width: 100vw;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 800px) {
+    img {
+        width: 80vw;
+    }
+}
+
+@media (min-width: 800px) and (max-width: 1000px) {
+    img {
+        width: 60vw;
+    }
+}
+
+@media (min-width: 1001px) {
+    img {
+        width: 50vw;
+    }
+}
+
+.img-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+img {
+    display: block;
+    height: 70vh;
+}
