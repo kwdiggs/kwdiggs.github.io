@@ -1,0 +1,57 @@
+@import "./assets/styles/keyboard.css";
+@import "./assets/styles/dialog.css";
+
+body {
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    background: white;
+    touch-action: manipulation;
+}
+
+.clue-area {
+    height: 5vh;
+    width: 100vw;
+    font-size: 3vh;
+    letter-spacing: 1vh;
+    text-align: center;
+    background: blue;
+    color: white;
+}
+
+.flex-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.curtain {
+    position: absolute;
+    top: 5vh;
+    width: 100vw;
+    height: 65vh;
+    background: white;
+}
+
+.img-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+img {
+    display: block;
+    height: 70vh;
+    width: 100vw;
+}
+
+#refresh-button {
+    position: absolute;
+    background: transparent;
+
+    min-height: 100vh;
+
+    z-index: 42;
+    font-family: cursive;
+    font-size: 10em;
+    transform: rotate(90deg);
+}
