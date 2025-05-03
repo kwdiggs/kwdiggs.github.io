@@ -1,7 +1,6 @@
 import { foodList as FoodList } from  "./food-list.js";
 
 const clueElement = document.getElementById("clue");
-
 const clueIndex= getClueIndex();
 const word = getWord().toUpperCase();
 console.log(word);
