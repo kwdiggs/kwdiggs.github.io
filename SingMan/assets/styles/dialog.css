@@ -21,11 +21,11 @@ dialog {
 }
 
 .background-victory {
-    background-image: url("../victory.png");
+    background-image: url("../images/victory.png");
 }
 
 .background-defeat {
-    background-image: url("../defeat.png");
+    background-image: url("../images/defeat.png");
 }
 
 .dialog-content {
