@@ -1,0 +1,37 @@
+header > h2 > a {
+    cursor: pointer;
+}
+
+.action-button:hover {
+    background: rgba(26,188,153, 0.1);
+}
+
+.portfolio-header {
+    color: #1abc9c;
+}
+
+.portfolio {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    grid-gap: 2px;
+}
+
+.portfolio *:hover {
+    text-decoration: none;
+    background-color: #1abc9c;
+    color: white;
+}
+
+.portfolio-item {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 1em;
+    font-weight: bold;
+    text-align: center;
+    color: #555;
+}
+
+
+
+
