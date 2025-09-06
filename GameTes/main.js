@@ -1,6 +1,6 @@
 import { PlayingCard } from './scripts/PlayingCard.js';
 import { Table } from './scripts/Table.js';
-import * as Ui from './sripts/UiHelper.js'
+import * as Ui from './scripts/UiHelper.js'
 
 
 const hintBtn = document.querySelector(".hint");
@@ -17,7 +17,6 @@ const table = new Table();
 
 function bootstrap() {
 	initializeActionButtons();
-	console.log('f');
 	Ui.bootstrap(table);
 	respondToCardClicks();
 }
