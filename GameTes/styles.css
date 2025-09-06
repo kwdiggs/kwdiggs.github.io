@@ -1,0 +1,154 @@
+@import url("modern-normalize.css");
+
+:host {
+	font-family: Optima;
+}
+
+dialog {
+	border: 3px solid black;
+	border-radius: 3px;
+	background: limegreen;
+	color: white;
+	cursor: pointer;
+	font-size: 2em;
+}
+
+.scoreboard {
+	color: ghostwhite;
+	background: royalblue;
+	font-weight: bold;
+	letter-spacing: 3px;
+}
+
+.container {
+	width: 100vw;
+	height: 100vh;
+	background: rgba(128, 0, 128, 0.4);
+}
+
+.game-table-container {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-around;
+}
+
+.game-table {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	grid-template-rows: repeat(3, 1fr);
+	grid-gap: 2vh;
+	height: 100vh;
+	width: 100vw;
+	padding: 4px;
+	font-size: 1.25rem;
+}
+
+.plus-three-build {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: repeat(3, 1fr);
+	grid-gap: 2vh;
+	height: 100vh;
+	width: calc(100vw * 1/4);
+	margin-left: 5px;
+	padding: 4px;
+	font-size: 1.25rem;
+}
+
+.build {
+	display: flex;
+	flow-flow: column nowrap;
+}
+
+.game-cell {
+	display: flex;
+	flex-flow: column wrap;
+	justify-content: center;
+	align-items: center;
+	min-height: 50px;
+	min-width: 50px;
+	background-color: gainsboro;
+	border-radius: 3px;
+	user-select: none;
+}
+
+.hint,
+.plus-three {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: 1px solid gold;
+	border-radius: 3px;
+	padding: 2vh;
+	color: royalblue;
+	font-weight: bold;
+	background: rgba(255,255,255,0.5);
+	cursor: pointer;
+	user-select: none;
+}
+
+.plus-three {
+	top: revert;
+	bottom: 0;
+}
+
+.refresh-icon {
+	font-size: 3em;
+	transform: scaleX(-1);
+}
+
+.refresh-icon:hover {
+	animation: spin 1s 1 ease-in-out;
+}
+
+@keyframes spin {
+	from {
+		transform: scaleX(-1) rotate(0deg);
+	}
+	to {
+		transform: scaleX(-1) rotate(360deg);
+	}
+}
+
+.cell-content {
+	padding: 2vh;
+}
+
+.selected {
+	border: 2px solid black;
+}
+
+.highlit-cell {
+	border: 3px solid gold;
+	background: silver;
+}
+
+.rotate-positive {
+	transform: rotate(45deg);
+}
+
+.rotate-negative {
+	transform: rotate(-45deg);
+}
+
+.rotate-zero {
+	transform: rotate(0deg);
+}
+
+.border-solid {
+	border: 3px solid #333;
+}
+
+.border-dotted {
+	border: 3px dotted black;
+}
+
+.border-none {
+	border: 3px solid rbga(0, 0, 0, 0);
+}
+
+.display-none {
+	display: none;
+}
+
+
