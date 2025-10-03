@@ -18,9 +18,44 @@
     <div class="toast"></div>
   </body>
 
-  <script>
-    alert("Please note. This is a companion app for a specific hardware device. \n\nWhile I have added the following key mappings for you to simulate the sixteen trigger pads:  7809, UIOP,  JKL\;, and M\<\>\?, there remains the issue of what the knobs on the left-hand side do. \n\nYou will not get the privilege of playing with these knobs unless you meet one of two conditions: \n 1.) Own an Akai MPD218 Midi Controller and plug it in. \n 2.) You invite me to your office for an in-person meeting, I accept your invite, and I bring mine. \:\)");
-  </script>
+  <dialog class="info-dialog">
+    <div class="note">
+      <span><b>Please note.</b> This is a companion app for a specific hardware device.</span>
+      <p>While I have added the key mappings for you to simulate the sixteen trigger pads, there remains the issue of <i>what the knobs on the left-hand side do.</i>
+      </p>
+
+      <p>To use the knobs, you must meet 1 of 2 conditions:
+        <br>1.) Own an Akai MPD218 Midi Controller and plug it in (yes, this works).
+        <br>2.) You invite me to your office for an in-person meeting, and I accept your invite and bring my controller.
+      </p>
+    </div>
+
+    <p class="key-map-label">The mappings to your keyboard:</p>
+
+    <div class="key-map">
+      <div class="key-map-unit">7</div>
+      <div class="key-map-unit">8</div>
+      <div class="key-map-unit">0</div>
+      <div class="key-map-unit">9</div>
+
+      <div class="key-map-unit">U</div>
+      <div class="key-map-unit">I</div>
+      <div class="key-map-unit">O</div>
+      <div class="key-map-unit">P</div>
+
+      <div class="key-map-unit">J</div>
+      <div class="key-map-unit">K</div>
+      <div class="key-map-unit">L</div>
+      <div class="key-map-unit">;</div>
+
+      <div class="key-map-unit">M</div>
+      <div class="key-map-unit">&lt;</div>
+      <div class="key-map-unit">&gt;</div>
+      <div class="key-map-unit">?</div>
+    </div>
+
+    <p class="click-hint">Click anywhere to proceed.</p>
+  </dialog>
 
   <script src="main.js" type="module"></script>
   <script src="attract_mode.js" type="module"></script>

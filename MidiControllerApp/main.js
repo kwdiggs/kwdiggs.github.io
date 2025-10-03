@@ -5,13 +5,18 @@ import { EventName } from './configs/custom_events.js';
 import { FX_PAD_A, FX_PAD_B, KNOB_NAME } from './configs/controller_encodings.js';
 
 
+const infoDialog = document.querySelector(".info-dialog");
 let midiDeviceUserActivated = false;
 let activeButtons = Array(16).fill(false);
 
 function init() {
-  populateDom();
-  registerEventListeners();
-  AttractMode.start();
+  infoDialog.addEventListener("click", () => {
+    populateDom();
+    registerEventListeners();
+    AttractMode.start();
+    infoDialog.close();
+  });
+  infoDialog.showModal();
 }
 
 function populateDom() {

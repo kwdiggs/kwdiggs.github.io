@@ -16,6 +16,26 @@ button {
   touch-action: manipulation;
 }
 
+.key-map {
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 50px);
+  grid-gap: 4px;
+  justify-content: center;
+}
+
+.key-map,
+.key-map-label,
+.click-hint {
+  text-align: center;
+}
+
+.key-map-unit {
+  padding: 1vh;
+  border: 1px solid black;
+  border-radius: 2px;
+}
+
 .wrapper {
   display: flex;
   height: 100vh;
