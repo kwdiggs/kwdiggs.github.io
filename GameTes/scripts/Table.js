@@ -44,7 +44,7 @@ export class Table {
 
 	setTable() {
 		this.shuffleDeck();
-		// this.deck.splice(15);
+		// this.deck.splice(12);
 		this.dealUpcards();
 	}
 
