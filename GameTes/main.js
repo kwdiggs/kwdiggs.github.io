@@ -113,9 +113,9 @@ function calcGameOverStatus() {
 		hintBtn.classList.add("display-none");
 		Ui.cueScoreboard(
 			table.score,
-			table.calcTime(),
 			gameState.hintCount,
-			gameState.plusThreeCount
+			gameState.plusThreeCount,
+			table.calcTime()
 		);
 	} else if (table.deckEmpty) {
 		plusThreeBtn.classList.add("display-none");

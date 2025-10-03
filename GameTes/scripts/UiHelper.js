@@ -4,10 +4,11 @@ const cells = document.getElementsByClassName("game-cell");
 const plusThreeColumn = document.querySelector(".plus-three-build");
 
 const scoreboard = document.querySelector(".scoreboard");
-const score = document.querySelector(".score");
-const time = document.querySelector(".time");
-const hintCount = document.querySelector(".hint-count");
-const plusThreeCount = document.querySelector(".plus-three-count");
+const time = document.querySelector(".time-value");
+const scoreCount = document.querySelector(".score-value");
+
+const hintCount = document.querySelector(".hint-value");
+const plusThreeCount = document.querySelector(".plus-three-value");
 
 const refreshDialog = document.querySelector(".refresh-dialog");
 
@@ -22,13 +23,22 @@ function buildTable(table) {
 	makeUpcards(table.upcards);
 }
 
+function buildTableStatic(table) {
+	buildCellsStatic(table.completeDeck.length);
+}
+
 function cueStartupDialog(table) {
-	startDialog.addEventListener("click", () => {
+	startDialog.addEventListener("click", (e) => {
+		if (e.target.className.includes("print-deck")) {
+			window.open('card-printer/print-cards.html', '_blank').focus();
+		}
+
 		stopAttractMode();
 		table.startTimer();
 		startDialog.close();
 		revealButtons();
 	});
+
 	startDialog.showModal();
 }
 
@@ -154,15 +164,19 @@ function animateNotFound() {
 	}
 }
 
-function cueScoreboard(points, timeString, numHints, numPlusThree) {
+function cueScoreboard(score, numHints, numPlusThree, timerValues) {
+	const minute = timerValues[0];
+	const second = timerValues[1];
+
 	scoreboard.addEventListener("click", () => {
 		scoreboard.close();
 		cueRefreshDialog();
 	});
-	time.innerText = timeString;
-	score.innerText = `Matches Found: ${points}`;
-	hintCount.innerText = `Hints: ${numHints}`;
-	plusThreeCount.innerText = `Plus Threes: ${numPlusThree}`;
+	time.innerText = `${minute}m, ${second}s`;
+	scoreCount.innerText = score;
+	hintCount.innerText = numHints;
+	plusThreeCount.innerText = numPlusThree;
+
 	scoreboard.showModal();
 	startAttractMode();
 }
@@ -175,6 +189,13 @@ function cueRefreshDialog() {
 function buildCells(tableSize) {
 	for (let i = 0; i < tableSize; i++) {
 		const cell = createCellNode(i);
+		gameTable.appendChild(cell);
+	}
+}
+
+function buildCellsStatic(tableSize) {
+	for (let i = 0; i < tableSize; i++) {
+		const cell = createCellNodeStatic(i);
 		gameTable.appendChild(cell);
 	}
 }
@@ -194,6 +215,12 @@ function createCellNode(index) {
 	cell.classList.add("game-cell");
 	cell.addEventListener('click', () => document.dispatchEvent(cardSelect));
 
+	return cell;
+}
+
+function createCellNodeStatic(index) {
+	const cell = document.createElement("div");
+	cell.classList.add("game-cell");
 	return cell;
 }
 
@@ -292,4 +319,6 @@ export {
 	cueScoreboard,
 	activateUpcardBuild,
 	deactivateUpcardBuild,
+	buildTableStatic,
+	makeUpcards,
 };

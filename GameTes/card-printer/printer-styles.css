@@ -1,0 +1,13 @@
+@import url("../styles.css");
+
+
+.container {
+	background: transparent;
+}
+
+.game-cell {
+	height: 20vh;
+	border: 1px solid black;
+	background: transparent;
+	page-break-inside: avoid;
+}

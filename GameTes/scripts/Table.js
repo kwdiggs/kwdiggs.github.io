@@ -44,6 +44,7 @@ export class Table {
 
 	setTable() {
 		this.shuffleDeck();
+		// this.deck.splice(15);
 		this.dealUpcards();
 	}
 
@@ -210,6 +211,6 @@ export class Table {
 		const min = Math.trunc(diff / 1000 / 60);
 		const sec = Math.trunc((diff / 1000)  % 60) ;
 
-		return `Time: ${min}m, ${sec}s`;
+		return [min, sec, diff];
 	}
 }

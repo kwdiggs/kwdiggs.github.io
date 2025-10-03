@@ -4,6 +4,10 @@
 	font-family: Optima;
 }
 
+hr {
+	border-color: black;
+}
+
 dialog {
 	border: 3px solid black;
 	border-radius: 3px;
@@ -11,6 +15,22 @@ dialog {
 	color: white;
 	cursor: pointer;
 	font-size: 2em;
+
+/* 	border-color: limegreen; */
+	border-color: rgba(20, 200, 20, 1);
+}
+
+.dialog-button {
+	padding: 2vh;
+}
+
+.dialog-button:hover {
+	color: black;
+}
+
+.print-deck a {
+	color: inherit;
+	text-decoration: none;
 }
 
 .scoreboard {
@@ -18,6 +38,24 @@ dialog {
 	background: royalblue;
 	font-weight: bold;
 	letter-spacing: 3px;
+}
+
+.scoreboard-content {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+}
+
+.printer-link {
+	font-size: 0.5em;
+	margin-top: 24px;
+	color: yellow;
+	text-align: right;
+}
+
+.labels {
+	margin-right: 12px;
+	text-align: right;
 }
 
 .container {
