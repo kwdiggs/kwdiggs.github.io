@@ -20,6 +20,7 @@ dialog {
 
 .dialog-button {
 	padding: 2vh;
+	text-align: center;
 }
 
 .dialog-button:hover {
