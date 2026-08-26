@@ -6,6 +6,19 @@ header > h2 > a {
     background: rgba(26,188,153, 0.1);
 }
 
+nav > a {
+    color: white;
+}
+
+#header > a:hover,
+nav > a:hover {
+    color: #3498db;
+}
+
+#menu .links a:hover {
+    color: color: #1abc9c;
+}
+
 .portfolio-header {
     color: #1abc9c;
 }
