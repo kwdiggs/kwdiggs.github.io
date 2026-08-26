@@ -53,7 +53,7 @@ dialog {
 .container {
 	width: 100vw;
 	height: 100vh;
-	background: rgba(128, 0, 128, 0.4);
+	background: rgb(58, 135, 64));
 }
 
 .game-table-container {
