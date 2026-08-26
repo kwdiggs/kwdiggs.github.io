@@ -11,11 +11,11 @@ hr {
 dialog {
 	border: 3px solid black;
 	border-radius: 3px;
-	background: limegreen;
+	background: rgb(58, 135, 64);
+	border-color: limegreen;
 	color: white;
 	cursor: pointer;
 	font-size: 2em;
-	border-color: rgba(20, 200, 20, 1);
 }
 
 .dialog-button {
@@ -24,7 +24,7 @@ dialog {
 }
 
 .dialog-button:hover {
-	color: black;
+	color: gold;
 }
 
 .print-deck a {
