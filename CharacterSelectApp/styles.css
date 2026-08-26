@@ -3,7 +3,8 @@
 body,
 html {
     overflow: hidden;
-}border-
+    margin: 0;
+}
 
 body {
     margin: 0;
@@ -48,7 +49,7 @@ body {
     text-align: center;
     vertical-align: center;
     color: black;
-    animation: animate-char 0.5s  alternate infinite, flashy-color 0.25s linear infinite;
+    animation: animate-char 0.5s  alternate infinite;
 }
 
 .letter-container {
