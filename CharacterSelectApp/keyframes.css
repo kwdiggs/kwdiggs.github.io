@@ -45,6 +45,21 @@
     }
 }
 
+@keyframes flashy-color {
+    0% {
+        color: blue;
+    }
+    33% {
+        color: green;
+    }
+    66% {
+        color: orange;
+    }
+    100% {
+        color: red;
+    }
+}
+
 @keyframes bounce {
     0% {
         transform: translateY(0);

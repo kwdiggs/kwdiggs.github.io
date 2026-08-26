@@ -3,7 +3,7 @@
 body,
 html {
     overflow: hidden;
-}
+}border-
 
 body {
     margin: 0;
@@ -17,14 +17,21 @@ body {
 }
 
 .character-select-title {
+    margin: 0;
     padding: 12px 0;
-    background-color: rgb(255,93,93,0.4);
+    background-color: blue;
+    color: white;
     font-size: 1.5rem;
     font-weight: bold;
 }
 
+.parenthetical-commentary {
+    margin-top: 6px;
+    color: white;
+}
+
 .title {
-    margin-top: 12px;
+    margin: 0;
     text-align: center;
     font-size: 1.2rem;
 }
@@ -41,7 +48,7 @@ body {
     text-align: center;
     vertical-align: center;
     color: black;
-    animation: animate-char 0.5s  alternate infinite;
+    animation: animate-char 0.5s  alternate infinite, flashy-color 0.25s linear infinite;
 }
 
 .letter-container {
@@ -76,7 +83,7 @@ button {
     cursor: pointer;
     position: absolute;
     right: 1px;
-    top: 1px;
+    top: 4em;
     padding: 10px;
     border-radius: 0;
 }
