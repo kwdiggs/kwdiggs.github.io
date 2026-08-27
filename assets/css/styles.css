@@ -1,0 +1,65 @@
+@import url('circle-menu.css');
+@import url('font-awesome.min.css');
+
+/* Reset and base styles */
+body {
+    margin: 0;
+    font-family: sans-serif;
+}
+
+/* Flexbox layout for sticky footer */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header, footer {
+    padding: 0;
+    background-color: black;
+    color: #ffffff;
+}
+
+footer {
+    text-align: center;
+    font-size: 12px;
+}
+
+header {
+    border-bottom: 1px solid black;
+}
+
+footer {
+    border-top: 1px solid black;
+}
+
+main {
+    flex: 1; /* Pushes footer to the bottom */
+    padding: 12px;
+    background-color: #22B8ff;
+    color: white;
+}
+
+h1 {
+    font-size: 1em;
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+hr {
+    margin: 0;
+    background-color: black;
+}
+
+footer a:hover {
+    cursor: pointer;
+    color: #8833cc;
+}
+
+.portfolio-item:hover {
+    background-color: #8833cc;
+    color: #ffffff;
+}
