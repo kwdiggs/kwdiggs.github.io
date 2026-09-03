@@ -1,7 +1,12 @@
 @import url('circle-menu.css');
 @import url('font-awesome.min.css');
 
+
 /* Reset and base styles */
+
+.wrapper {
+    font-family: Chivo, sans-serif;
+}
 body {
     margin: 0;
     font-family: sans-serif;
@@ -87,3 +92,4 @@ footer a:hover {
 .awards-main {
     background-color: inherit;
 }
+

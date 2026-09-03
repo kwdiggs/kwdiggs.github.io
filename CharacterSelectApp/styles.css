@@ -111,7 +111,7 @@ button img {
 .scrolling-bg {
     position: absolute;
     top: 0;
-    left: 0;
+    left: -4px;
     width: 100vw;
     height: 100vh;
     background-image: url("android-chrome-192x192.png");
