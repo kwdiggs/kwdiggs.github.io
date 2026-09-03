@@ -12,11 +12,7 @@ let isMusicPlaying = false;
 let isFirstPlay = true;
 
 mute.addEventListener("click", () => {
-    if (isFirstPlay) {
-        narrator.volume = 1;
-        isFirstPlay = false;
-    }
-
+    narrator.volume = (isMusicPlaying) ? 0 : 1;
     music.volume = (isMusicPlaying) ? 0 : 1;
     muteIcon.src = (isMusicPlaying) ? "./assets/icons/volume-mute.png" : "./assets/icons/volume.png" ;
     isMusicPlaying = !isMusicPlaying;
