@@ -19,16 +19,19 @@ mute.addEventListener("click", () => {
 });
 
 document.addEventListener(("click"), () => {
-     if (!isUserActivated) {
-        isUserActivated = true;
-        music.play();
-        isMusicPlaying = true;
-        if (isFirstPlay) {
-            narrator.play();
-            isFirstPlay = false;
-        }
-        muteIcon.src = "./assets/icons/volume.png";
+    if (isUserActivated) {
+        return;
     }
+
+    if (isFirstPlay) {
+        narrator.play();
+        isFirstPlay = false;
+    }
+
+    isUserActivated = true;
+    music.play();
+    isMusicPlaying = true;
+    muteIcon.src = "./assets/icons/volume.png";
 });
 
 const onVowelClick = (event) =>  {
