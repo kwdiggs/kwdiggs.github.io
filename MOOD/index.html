@@ -895,7 +895,7 @@ function buildBotArena() {
   beltCells = []; MAP.forEach((row, y) => [...row].forEach((c, x) => { if (c === '5') beltCells.push({ x: x + .5, y: y + .5 }); }));
   pickups = [[6, 4], [10, 12], [3, 10], [13, 6], [6, 12], [10, 4], [4, 6], [12, 10], [6, 2], [10, 2]].map(([x, y]) => ({ x: x + .5, y: y + .5, alive: true, respawn: 0 }));
   pickupT = TUNING.bossBoxRespawn;
-  player.x = 2.5; player.y = 5.5; player.a = 0; player.stun = 0; player.hp = TUNING.playerHearts; player.inv = 0; player.jz = 0; player.vz = 0; EYE = .5;
+  skPerch = null; skLost = 0; player.x = 2.5; player.y = 5.5; player.a = 0; player.stun = 0; player.hp = TUNING.playerHearts; player.inv = 0; player.jz = 0; player.vz = 0; EYE = .5;
   pitch = 0; asT = 0; candies = Math.max(carryCandies === null ? TUNING.candyMinBoss : carryCandies, TUNING.candyMinBoss); levelStartCandies = candies; particles = []; keyItem = null; hasKey = false; doorTalk = 0; projectiles = []; rainbows = []; impacts = [];
   boss = null;
   grandma = { x: -999, y: -999, happy: true, backT: 0, bt: 0, bub: '', look: { shirt: '#e88fb5', hair: '#d8d8e6', style: 0, skin: '#f3c9a0', acc: null, ph: 0 } };
@@ -2309,6 +2309,16 @@ function drawPVCGun() {                                    // the boss arena baz
   L.restore();
 }
 
+function drawSwirl(L, cx, cy, maxR, lw, rot, bandFrac) {      // a lollipop's rainbow swirl: one long continuous stroke per colour band (hundreds of tiny round-capped strokes showed up as bubbles on iPhone)
+  const N = 360, turns = 3.2, per = Math.max(2, Math.round(bandFrac * N)), TAU = Math.PI * 2;
+  L.save(); L.lineWidth = lw; L.lineCap = 'butt'; L.lineJoin = 'round';
+  for (let b = 0; b * per < N; b++) {
+    L.strokeStyle = PAL[b % 6]; L.beginPath();
+    for (let n = b * per; n <= Math.min(N, (b + 1) * per + 1); n++) { const f = n / N, a = f * turns * TAU + rot, r = f * maxR, x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r; if (n === b * per) L.moveTo(x, y); else L.lineTo(x, y); }
+    L.stroke();
+  }
+  L.restore();
+}
 function drawGun() {                                       // the lollipop launcher at the bottom right: a striped stick and a big swirl head
   if (levelNo === 3) { drawPVCGun(); return; }
   const sway = Math.sin(t * 5) * (moving ? 7 : 2), L = ctx, u = 9;
@@ -2328,14 +2338,8 @@ function drawGun() {                                       // the lollipop launc
   const head = () => L.arc(hx, hy, R, 0, 7);
   L.save(); L.beginPath(); head(); L.clip();                                   // the candy: a rainbow swirl
   L.fillStyle = '#fff6fb'; L.fillRect(hx - R, hy - R, 2 * R, 2 * R);
-  L.lineWidth = R / 6.2; L.lineCap = 'round';
-  const turns = 3.2, TAU = Math.PI * 2;
-  for (let k = 0; k < 160; k++) {
-    const a0 = k / 160 * turns * TAU, a1 = (k + 1.6) / 160 * turns * TAU;
-    const r0 = a0 / (turns * TAU) * R * .9, r1 = a1 / (turns * TAU) * R * .9;
-    L.strokeStyle = PAL[Math.floor(k / 14) % 6];
-    L.beginPath(); L.moveTo(hx + Math.cos(a0 + .6) * r0, hy + Math.sin(a0 + .6) * r0); L.lineTo(hx + Math.cos(a1 + .6) * r1, hy + Math.sin(a1 + .6) * r1); L.stroke();
-  }
+  const TAU = Math.PI * 2;
+  drawSwirl(L, hx, hy, R * .9, R / 6.2, .6, 14 / 160);
   L.fillStyle = 'rgba(60,30,110,.2)';                                          // cel shadow crescent on the lower right
   L.beginPath(); L.arc(hx, hy, R, 0, TAU); L.moveTo(hx - 12 + R, hy - 10); L.arc(hx - 12, hy - 10, R, 0, TAU, true); L.fill();
   L.restore();
@@ -3028,7 +3032,7 @@ function render() {
   for (const sh of botShots) { const ps = project(sh); if (ps) items.push({ kind: 'botshot', s: sh, p: ps }); }
   if (levelNo === 2) items.push({ kind: 'stairs', s: { x: stairX + .5, y: stairY + .5 }, p: project({ x: stairX + .5, y: stairY + .5 }) });
   if (levelNo <= 2) for (let gy = 1; gy < NM - 1; gy++) for (let gx = 1; gx < NM - 1; gx++) if (isCube(gx, gy)) { const pgf = project({ x: gx + .5, y: gy + .5 }); if (pgf) items.push({ kind: 'gift', s: { x: gx + .5, y: gy + .5 }, p: pgf }); }   // the bows on the present-cubes
-  if ((levelNo === 1 || levelNo === 2) && MAP.length > 5) { const sk = skaterNow(t), psk = project(sk, true); if (psk) items.push({ kind: 'skater', s: sk, p: psk }); }
+  if ((levelNo === 1 || levelNo === 2) && MAP.length > 5) { const sk = skPerch ? skaterGround() : skaterNow(t - skLost), psk = project(sk, true); if (psk) items.push({ kind: 'skater', s: sk, p: psk }); }
   if (levelNo === 3 && boss && state !== 'bossintro') items.push({ kind: 'boss', s: boss, p: project(boss, true) });
   for (const r of rainbows) items.push({ kind: 'rainbow', s: r, p: project(r) });
   if (keyItem && keyItem.alive && keyItem.floor === floorIdx) items.push({ kind: 'key', s: keyItem, p: project(keyItem, true) });
@@ -3152,7 +3156,7 @@ function render() {
     } else if (it.kind === 'gift') {
       drawGiftBow(pr, zbuf);
     } else if (it.kind === 'skater') {
-      const fy = H / 2 + FOCAL * (EYE - wallH() - it.s.hop) / pr.perp;
+      const fy = H / 2 + FOCAL * (EYE - (it.s.ground ? 0 : wallH()) - it.s.hop) / pr.perp;
       withColumnClip(pr.sx, 7 * pr.u, pr.perp, zbuf, () => (it.s.sled ? drawToboggan : drawSkater)(pr.sx, fy, pr.u, it.s), fy - 10 * pr.u);
     } else if (it.kind === 'stairs') {
       drawStairs(pr.sx, pr.feet, FOCAL / pr.perp * .4, floorIdx === 0);
@@ -4398,8 +4402,7 @@ function crHoldLollipop(ex, ey, k) {   // a fist gripping a lollipop (a striped 
   for (let q = 0; q < 8; q++) { const y = hy + q * 13; L.beginPath(); L.moveTo(-6, y); L.lineTo(6, y - 8); L.lineTo(6, y + 1); L.lineTo(-6, y + 9); L.closePath(); L.fill(); }
   L.restore(); L.beginPath(); L.roundRect(-4.5, hy, 9, 56, 4.5); L.lineWidth = 3; L.strokeStyle = INK; L.stroke();
   L.save(); L.beginPath(); L.arc(0, hy, r, 0, 7); L.clip(); L.fillStyle = '#fff6fb'; L.fillRect(-r, hy - r, 2 * r, 2 * r);   // the head: a rainbow swirl
-  L.lineWidth = r / 5.2; let px = 0, py = hy;
-  for (let n = 1; n <= 120; n++) { const a = n / 120 * 3.2 * Math.PI * 2, rad = r * 1.05 * n / 120, x = Math.cos(a) * rad, y = hy + Math.sin(a) * rad; L.strokeStyle = PAL[Math.floor(n / 8) % 6]; L.beginPath(); L.moveTo(px, py); L.lineTo(x, y); L.stroke(); px = x; py = y; }
+  drawSwirl(L, 0, hy, r * 1.05, r / 5.2, 0, 8 / 120);
   L.restore(); L.beginPath(); L.arc(0, hy, r, 0, 7); L.lineWidth = 3.5; L.strokeStyle = INK; L.stroke();
   L.fillStyle = 'rgba(255,255,255,.7)'; L.beginPath(); L.ellipse(-r * .42, hy - r * .45, r * .22, r * .12, -.6, 0, 7); L.fill();
   L.restore();
@@ -4684,6 +4687,42 @@ function skaterNow(tt) {
     if (Math.abs(dd) < SK.jumpR) { const pr = (SK.jumpR - dd) / (2 * SK.jumpR), f = Math.max(0, Math.min(1, (pr - .12) / .76)); tuck = Math.sin(Math.PI * pr); hop = SK.hopH * tuck; rot = sled ? 0 : 2 * Math.PI * f * f * (3 - 2 * f); }
   }
   return { x: a.x, y: a.y, hop, rot, tuck, face: SK.face, roll: tt * 9, sled };
+}
+let skPerch = null, skLost = 0;   // skPerch: null, or the player up on the wall while the kid stands on the ground; skLost: time the kid has spent off the wall, so he carries on from where he left it
+function skaterGround() { return { x: skPerch.gx, y: skPerch.gy, hop: 0, rot: 0, tuck: 0, face: SK.face, roll: t * 3, sled: levelNo === 2 && floorIdx > 0, ground: true }; }
+function skaterHit(p) {                                       // is this candy at the kid, at the height he rides at?
+  const sk = skaterNow(t - skLost);
+  if (Math.hypot(sk.x - p.x, sk.y - p.y) > .6) return false;
+  const dx = sk.x - p.x0, dy = sk.y - p.y0, d = Math.hypot(dx, dy), perp = d * Math.cos(norm(Math.atan2(dy, dx) - p.ang));
+  if (perp < .3) return false;
+  const u = FOCAL / perp / 14, feet = H / 2 + FOCAL * ((p.eye0 ?? EYE) - wallH() - sk.hop) / perp;
+  return Math.abs(feet - 5 * u - (H / 2 - p.aimY)) < 8 * u;
+}
+function swapWithSkater() {                                    // he drops to the ground where you stood; you are on the wall top where he was
+  const sdNow = (t - skLost) * SK.speed + 7; let best = null;
+  for (const d of [0, .5, -.5, 1, -1, 1.5, -1.5, 2, -2, 3, -3]) {   // the nearest spot along the wall with open floor in front of it
+    const r = skaterAt(sdNow + d), nx = -r.dy, ny = r.dx, px = r.x + nx * .4, py = r.y + ny * .4;
+    if (!blocked(px, py) && !blocked(px + nx * .5, py + ny * .5)) { best = { px, py, nx, ny }; break; }
+  }
+  if (!best) return false;
+  skPerch = Object.assign({ ph: 'up', t: 0, t0: t, gx: player.x, gy: player.y, z: wallH() }, best);
+  player.x = best.px; player.y = best.py; player.vz = 0; player.jz = 0;
+  flash = .5; shake = .2; sfx([[500, .08, 'square'], [900, .08, 'square', .06], [1400, .12, 'square', .12]]);
+  say('You swapped places with the skater! Shoot to hop back down.');
+  return true;
+}
+function hopDown() {                                           // shooting from the wall top: hop back down to the ground
+  const k = skPerch; if (!k || k.ph !== 'up') return;
+  k.ph = 'down'; k.t = 0; k.lx = k.gx; k.ly = k.gy;
+  for (const d of [1.4, 2.4, 3.4]) { const lx = k.px + k.nx * d, ly = k.py + k.ny * d; if (!blocked(lx, ly)) { k.lx = lx; k.ly = ly; break; } }   // down in front of the wall; failing that, back where you stood
+  sfx([[700, .08, 'sine'], [350, .14, 'sine', .06]]);
+}
+function updatePerch(dt) {
+  const k = skPerch; k.t += dt; player.inv = Math.max(player.inv || 0, .3);   // nobody can reach you up there
+  if (k.ph === 'up') { player.x = k.px; player.y = k.py; const e = Math.min(1, k.t / .35); player.jz = k.z * (1 - Math.pow(1 - e, 3)); return; }
+  const e = Math.min(1, k.t / .6), m = e * e * (3 - 2 * e);
+  player.x = k.px + (k.lx - k.px) * m; player.y = k.py + (k.ly - k.py) * m; player.jz = k.z * (1 - m) + Math.sin(Math.PI * e) * .35;
+  if (e >= 1) { player.x = k.lx; player.y = k.ly; player.jz = 0; player.vz = 0; skLost += t - k.t0; skPerch = null; shake = .15; sfx([[160, .1, 'sine'], [110, .14, 'sine', .05]]); }   // landed: the kid is back on the wall
 }
 function drawSkater(cx, feet, u, k) {                        // side view, drawn in units of s; x runs the way he is facing, y is up when negative
   const L = ctx, s = u * .72, K = INK, lw = .5, tk = k.tuck;
@@ -5099,6 +5138,7 @@ function endIntro() {
 
 function fire() {
   if (state !== 'play') return;
+  if (skPerch) { hopDown(); return; }   // up on the wall after a swap, shooting hops you back down
   if (levelNo === 3 && boss && boss.powerT > 0) return;   // not until the bear's rainbow aura has finished
   if (levelNo === 3 && boss && boss.dead) return;                      // no more shots once the bear is beaten
   if (levelNo === 3 && performance.now() - lastShot3 < 500) return;   // level 3: 0.5 s between shots
@@ -5158,6 +5198,7 @@ function updateProjectiles(dt) {
     for (let k = 0; k < 4 && p.alive; k++) {
       const px = p.x, py = p.y;
       p.x += p.vx * dt / 4; p.y += p.vy * dt / 4;
+      if ((levelNo === 1 || levelNo === 2) && !skPerch && skaterHit(p) && swapWithSkater()) { p.alive = false; break; }   // a hit on the skateboarder swaps places with him
       if (isWall(p.x, p.y)) {
         p.x = px; p.y = py;                                  // stop at the face of the wall
         playWallHit();                                       // the candy hitting the wall
@@ -5278,9 +5319,11 @@ function update(dt) {
   slowT = Math.max(0, slowT - dt);
   if (state === 'play') {
     pitchIdle += dt;
+    if (skPerch) updatePerch(dt); else {
     player.vz = (player.vz || 0) - 12 * dt;                       // gravity, while you spring up and down
     player.jz = (player.jz || 0) + player.vz * dt;
     if (player.jz <= 0) { player.jz = 0; player.vz = 0; }
+    }
     EYE = .5 + player.jz;
     for (const tr of trampolines) {                              // stepping on a spring throws you up
       tr.cool = Math.max(0, (tr.cool || 0) - dt);
@@ -5354,12 +5397,12 @@ function update(dt) {
     const f = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0);
     const s = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0);
     moving = f !== 0 || s !== 0;
-    const sp = stunned ? 0 : TUNING.walkSpeed * dt, ca = Math.cos(player.a), sa = Math.sin(player.a);
+    const sp = stunned || skPerch ? 0 : TUNING.walkSpeed * dt, ca = Math.cos(player.a), sa = Math.sin(player.a);
     const mx = (ca * f - sa * s) * sp, my = (sa * f + ca * s) * sp;
     if (!blocked(player.x + mx, player.y)) player.x += mx;
     if (!blocked(player.x, player.y + my)) player.y += my;
 
-    updateHuggers(dt);
+    if (!skPerch) updateHuggers(dt);
     updateProjectiles(dt);
     if (levelNo === 3) updateBoss(dt);
     if (levelNo === 4) { beltPush(player, dt, (x, y) => blocked(x, y)); updateBots(dt); }
@@ -5379,7 +5422,7 @@ function update(dt) {
       if (!blocked(s.x, ny, .4)) s.y = ny; else s.wa = (s.wa ?? 0) + 1.5;
       s.look.walking = Math.hypot(s.x - sx0, s.y - sy0) > 1e-4;
       if (s.look.walking) { s.look.walkT = (s.look.walkT || 0) + dt; if (s.look.walkT >= .22) { s.look.walkT -= .22; s.look.walkStep = ((s.look.walkStep || 0) + 1) & 3; } }
-      if (!s.happy && !s.baby && Math.hypot(player.x - s.x, player.y - s.y) < .45) {
+      if (!skPerch && !s.happy && !s.baby && Math.hypot(player.x - s.x, player.y - s.y) < .45) {
         state = 'lose'; loseMsg = 'A sad person reached you.';
         say('A sad person reached you!');
         return;
@@ -5543,13 +5586,17 @@ function touchUI() {                                             // which touch 
   tjoyEl.style.display = tlookEl.style.display = playing ? 'block' : 'none'; tskipEl.style.display = skip ? 'block' : 'none';
   if (!playing) releaseTouch();
 }
-function touchLook() {                                           // the right stick turns and tilts the view for as long as it is held over
+let tlookVX = 0, tlookVY = 0;
+function touchLook() {                                           // the right stick turns and tilts the view; the view's speed eases toward the stick (damping) and glides to a stop when it is let go
   const now = performance.now(), dt = Math.min(.1, (now - tlookPrev) / 1000); tlookPrev = now;
-  if (!TM || tl.id === null || state !== 'play') return;
-  const f = v => Math.abs(v) < .12 ? 0 : Math.sign(v) * Math.pow((Math.abs(v) - .12) / .88, 1.5);
-  const sx = f(tl.dx / 46), sy = f(tl.dy / 46);
-  player.a += sx * 2.8 * dt;
-  if (sy) { pitch = Math.max(-H * .3, Math.min(H * .3, pitch - sy * 260 * dt)); pitchIdle = 0; }
+  if (!TM || state !== 'play') { tlookVX = tlookVY = 0; return; }
+  const held = tl.id !== null, f = v => Math.abs(v) < .12 ? 0 : Math.sign(v) * Math.pow((Math.abs(v) - .12) / .88, 1.7);
+  const tx = held ? f(tl.dx / 46) * 2.6 : 0, ty = held ? f(tl.dy / 46) * 240 : 0;   // the speed the stick asks for: rad/s of turn, px/s of tilt
+  tlookVX += (tx - tlookVX) * (1 - Math.exp(-dt * (Math.abs(tx) > Math.abs(tlookVX) ? 9 : 6)));   // eases in over about a tenth of a second, out over about a sixth
+  tlookVY += (ty - tlookVY) * (1 - Math.exp(-dt * (Math.abs(ty) > Math.abs(tlookVY) ? 9 : 6)));
+  if (Math.abs(tlookVX) < .004) tlookVX = 0; if (Math.abs(tlookVY) < .4) tlookVY = 0;
+  player.a += tlookVX * dt;
+  if (tlookVY) { pitch = Math.max(-H * .3, Math.min(H * .3, pitch - tlookVY * dt)); pitchIdle = 0; }
 }
 function enableTM() {
   if (document.getElementById('tc')) return;
