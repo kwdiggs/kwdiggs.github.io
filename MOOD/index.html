@@ -245,6 +245,12 @@ const DIALOG = {
   "This culinary technology is amazing!",
   "Stupendous!"
  ],
+ "karate_witty": [
+  "Ka-ra-taysty!",
+  "Hi-yah! Hi-yum!",
+  "Sensei-tional!",
+  "The power! I must train harder!"
+ ],
  "banana_witty": [
   "That was BANANAS!",
   "This is most a-peeling!",
@@ -1129,6 +1135,7 @@ function resetWorld() {
   NPC_COUNT = all.length;
   // five special NPCs take the place of regular ones, so the counts stay the same
   const ROLES = ['police', 'fire', 'builder', 'doctor', 'baby', 'ghost', 'banana'];
+  if (levelNo === 2) ROLES.push('karate');                    // level 2 has one more: a karate student
   const picked = pickN(all.map((_, i) => i), ROLES.length);
   picked.forEach((i, n) => {
     if (ROLES[n] === 'baby') all[i].baby = true;
@@ -1421,13 +1428,14 @@ function drawPerson(cx, feet, u, p, happy, hug, pose) {
   const bobY = happy ? Math.abs(Math.sin(t * 5 + p.ph)) * u * 1.3 : Math.sin(t * 2 + p.ph) * u * .2;
   cx += happy ? Math.sin(t * 4 + p.ph) * u * .9 : Math.sin(t * 1.3 + p.ph) * u * .3;
   const y = feet - bobY + (happy ? 0 : u * .8) - walkBob;
-  const skin = p.skin, skinD = dk(skin, .32);
+  const skin = p.role === 'banana' ? '#f1c49a' : p.skin, skinD = dk(skin, .32);
   const C = ({
     police:  { top: '#2c4a8a', pants: '#1f2f5a', shoes: '#15151d', hand: skin },
     fire:    { top: '#f2b824', pants: '#2b2f3d', shoes: '#15151d', hand: '#2b2f3d' },
     builder: { top: '#5f7fa8', pants: '#3e5a86', shoes: '#6b4a2a', hand: '#d9a85a' },
     doctor:  { top: '#f6f8fc', pants: '#4fb0d4', shoes: '#e8ecf4', hand: skin },
-    banana:  { top: '#ffd93b', pants: '#f2c21b', shoes: '#7a5230', hand: skin }
+    banana:  { top: '#ffd93b', pants: '#f2c21b', shoes: '#7a5230', hand: skin },
+    karate:  { top: '#f6f3ea', pants: '#f6f3ea', shoes: skin, hand: skin }
   })[role] || { top: p.shirt, pants: '#3b2d52', shoes: '#2b2236', hand: skin };
   if (pose && (pose.pass === 'back' || pose.pass === 'hand')) {   // the arm around the partner's shoulders: drawn behind both bodies, and its hand on top of them
     const sd = pose.inner, sx = cx + sd * 3.2 * u, sy = y - 5.4 * u, nx = cx + sd * 5.7 * u, ny = y - 9.8 * u;
@@ -1489,6 +1497,13 @@ function drawPerson(cx, feet, u, p, happy, hug, pose) {
         L.beginPath(); L.moveTo(cx + 1.7 * u, y - 6.7 * u); L.bezierCurveTo(cx + 2.8 * u, y - 4.4 * u, cx + 1.9 * u, y - 3.5 * u, cx + 1.1 * u, y - 3.7 * u); L.stroke();
       }
       cel(u, () => L.arc(cx + 1.1 * u, y - 3.5 * u, .7 * u, 0, 7), '#d8dfea', '#98a3ba');                          // chest piece
+    } else if (role === 'karate') {                                                                            // the gi: crossed lapels, a black belt with a knot and two tails
+      L.strokeStyle = '#bdb6a2'; L.lineWidth = Math.max(1, .35 * u); L.lineCap = 'round';
+      L.beginPath(); L.moveTo(cx - 1.5 * u, y - 6.8 * u); L.lineTo(cx + .5 * u, y - 4.0 * u); L.moveTo(cx + 1.5 * u, y - 6.8 * u); L.lineTo(cx - .5 * u, y - 4.0 * u); L.stroke();
+      cel(u, () => L.roundRect(cx - 3.5 * u, y - 3.7 * u, 7 * u, .95 * u, .2 * u), '#15151d', null);
+      cel(u, () => L.roundRect(cx - .5 * u, y - 3.9 * u, 1.0 * u, 1.3 * u, .25 * u), '#15151d', null);
+      cel(u, () => { L.moveTo(cx - .3 * u, y - 2.7 * u); L.lineTo(cx - 1.1 * u, y - 1.2 * u); L.lineTo(cx - .4 * u, y - 1.2 * u); L.lineTo(cx, y - 2.7 * u); L.closePath(); }, '#15151d', null);
+      cel(u, () => { L.moveTo(cx + .1 * u, y - 2.7 * u); L.lineTo(cx + .7 * u, y - 1.1 * u); L.lineTo(cx + 1.3 * u, y - 1.3 * u); L.lineTo(cx + .5 * u, y - 2.7 * u); L.closePath(); }, '#15151d', null);
     } else if (role === 'banana') {                                                                            // the banana suit: peel ridges, freckles and a brown hem
       L.strokeStyle = '#cf9f0e'; L.lineWidth = Math.max(1, .35 * u); L.lineCap = 'round';
       for (const sd of [-1, 1]) { L.beginPath(); L.moveTo(cx + sd * 1.3 * u, y - 6.5 * u); L.quadraticCurveTo(cx + sd * 2.2 * u, y - 3.9 * u, cx + sd * 1.3 * u, y - 1.9 * u); L.stroke(); }
@@ -1583,6 +1598,10 @@ function drawPerson(cx, feet, u, p, happy, hug, pose) {
     cel(u, () => { L.moveTo(hx - 3.6 * u, hy - 2.2 * u); L.quadraticCurveTo(hx - 3.8 * u, hy - 5.8 * u, hx + 1.0 * u, hy - 6.4 * u); L.quadraticCurveTo(hx + 3.6 * u, hy - 5.6 * u, hx + 3.6 * u, hy - 2.2 * u); L.closePath(); }, '#ffd93b', dk('#ffd93b'));
     cel(u, () => { L.moveTo(hx + .1 * u, hy - 6.2 * u); L.lineTo(hx + 1.9 * u, hy - 6.4 * u); L.lineTo(hx + 2.4 * u, hy - 8.0 * u); L.lineTo(hx + .6 * u, hy - 8.1 * u); L.closePath(); }, '#7a5230', dk('#7a5230'));
     if (full) { L.strokeStyle = '#cf9f0e'; L.lineWidth = Math.max(1, .3 * u); L.beginPath(); L.moveTo(hx - 1.4 * u, hy - 3.6 * u); L.quadraticCurveTo(hx - 1.2 * u, hy - 5.4 * u, hx + .4 * u, hy - 6.0 * u); L.stroke(); shine(L, hx - 2.6 * u, hy - 3.4 * u, .5 * u, .9 * u, .5, .55); }
+  } else if (role === 'karate') {                                                       // white headband with a red sun and two tails
+    cel(u, () => { L.moveTo(cx + 3.0 * u, y - 10.5 * u); L.lineTo(cx + 5.0 * u, y - 9.3 * u); L.lineTo(cx + 4.7 * u, y - 10.4 * u); L.lineTo(cx + 5.3 * u, y - 11.2 * u); L.lineTo(cx + 3.0 * u, y - 11.1 * u); L.closePath(); }, '#ffffff', '#c9c9d4');
+    cel(u, () => { L.moveTo(cx - 3.35 * u, y - 10.9 * u); L.quadraticCurveTo(cx, y - 12.1 * u, cx + 3.35 * u, y - 10.9 * u); L.lineTo(cx + 3.35 * u, y - 9.9 * u); L.quadraticCurveTo(cx, y - 11.1 * u, cx - 3.35 * u, y - 9.9 * u); L.closePath(); }, '#ffffff', '#c9c9d4');
+    L.fillStyle = '#d62839'; L.beginPath(); L.arc(cx, y - 10.95 * u, .5 * u, 0, 7); L.fill();
   } else if (role === 'doctor' && full) {                                               // head mirror
     L.strokeStyle = INK; L.lineWidth = Math.max(1.5, .85 * u); L.beginPath(); L.arc(cx, y - 9 * u, 3.3 * u, Math.PI * 1.12, Math.PI * 1.88); L.stroke();
     L.strokeStyle = '#c9d3e6'; L.lineWidth = Math.max(1, .45 * u); L.beginPath(); L.arc(cx, y - 9 * u, 3.3 * u, Math.PI * 1.12, Math.PI * 1.88); L.stroke();
@@ -2054,14 +2073,26 @@ function getRainbowSprite() {                              // the emoji is raste
   return rainbowSpr = c;
 }
 
-const HEART_COLS = ['#ff3b5c', '#ff8a3c', '#ffd23f', '#5fd16a', '#3ec1ff', '#7a6bff', '#d65bff'], heartSprites = {};
-function getHeartSprite(i) {   // a glossy outlined heart in one of seven colors, painted once and kept
+const HEART_COLS = (() => {   // 36 heart colors: eighteen hues twenty degrees apart, each in a light and a dark tone, so no two hearts on screen share a color
+  const hex = (h, sat, l) => { const a = sat * Math.min(l, 1 - l), f = n => { const k = (n + h / 30) % 12, c = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); return Math.round(255 * c).toString(16).padStart(2, '0'); }; return '#' + f(0) + f(8) + f(4); };
+  const out = []; for (let i = 0; i < 18; i++) out.push(hex(i * 20 + 350, .95, .6), hex(i * 20 + 10 + 350, .9, .47)); return out;
+})(), heartSprites = {};
+let heartBag = [], heartLast = -1;
+function nextHeartColor() {   // hearts take their colors from a shuffled bag of all of them, so a color never repeats until every other one has been used, and never twice in a row
+  if (!heartBag.length) {
+    heartBag = HEART_COLS.map((_, i) => i);
+    for (let i = heartBag.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [heartBag[i], heartBag[j]] = [heartBag[j], heartBag[i]]; }
+    if (heartBag[heartBag.length - 1] === heartLast) [heartBag[heartBag.length - 1], heartBag[0]] = [heartBag[0], heartBag[heartBag.length - 1]];
+  }
+  return heartLast = heartBag.pop();
+}
+function getHeartSprite(i) {   // a glossy outlined heart in one of the heart colors, painted once and kept
   if (heartSprites[i]) return heartSprites[i];
   const cv = document.createElement('canvas'); cv.width = cv.height = 96; const c = cv.getContext('2d');
   c.translate(48, 50); c.scale(.42, .42); c.lineJoin = 'round';
   c.beginPath(); c.moveTo(0, 85); c.bezierCurveTo(-150, -5, -85, -125, 0, -50); c.bezierCurveTo(85, -125, 150, -5, 0, 85); c.closePath();
-  const g = c.createLinearGradient(-90, -90, 90, 90); g.addColorStop(0, '#fff'); g.addColorStop(.25, HEART_COLS[i % 7]); g.addColorStop(1, HEART_COLS[i % 7]);
-  c.fillStyle = HEART_COLS[i % 7]; c.fill(); c.fillStyle = 'rgba(0,0,0,.18)'; c.save(); c.clip(); c.fillRect(-150, 20, 300, 100); c.restore();
+  const g = c.createLinearGradient(-90, -90, 90, 90); g.addColorStop(0, '#fff'); g.addColorStop(.25, HEART_COLS[i % HEART_COLS.length]); g.addColorStop(1, HEART_COLS[i % HEART_COLS.length]);
+  c.fillStyle = HEART_COLS[i % HEART_COLS.length]; c.fill(); c.fillStyle = 'rgba(0,0,0,.18)'; c.save(); c.clip(); c.fillRect(-150, 20, 300, 100); c.restore();
   c.lineWidth = 8; c.strokeStyle = INK; c.stroke();
   c.fillStyle = 'rgba(255,255,255,.6)'; c.beginPath(); c.ellipse(-52, -38, 24, 12, -.7, 0, 7); c.fill();
   return heartSprites[i] = cv;
@@ -2077,7 +2108,7 @@ function drawFlameAura(cx, feet, k, alpha, ph) {   // the bear's rainbow flame (
       const h = (i === 0 || i === n ? 12 : 24 + 4 * Math.sin(i * 1.3)) * k * tall * flick;
       L.quadraticCurveTo(fx - 1.6 * k, feet - h * .55, fx, feet - h);
     }
-    L.lineTo(cx + 10 * k * wide, feet); L.closePath(); L.fillStyle = col; L.fill();
+    L.lineTo(cx + 10 * k * wide, feet); L.bezierCurveTo(cx + 10 * k * wide, feet + 5 * k * tall, cx - 10 * k * wide, feet + 5 * k * tall, cx - 10 * k * wide, feet); L.closePath(); L.fillStyle = col; L.fill();   // a rounded bottom, so the flame is a flame and not a flat-based shape
   }
   L.restore();
 }
@@ -2250,7 +2281,7 @@ const BOSS_LINE = DIALOG.bear_intro;
 const bossFace = { hp: 3, max: 20, hurtT: 0, shotAnim: 0, dead: false, noCape: true };   // the intro bear never wears the cape;   // low hp gives him the red, furious eyes
 
 function startDoorCut() { state = 'doorcut'; doorCutT = 0; doorCutStage = 0; pitch = 0; for (const k in keys) keys[k] = false; moving = false; }   // keys held down when the key is picked up must not carry over
-function endDoorCut() { state = 'play'; }
+function endDoorCut() { state = 'play'; if (hasKey) doorOpenAmt = 1; }   // skipping the cutscene (a tap on a phone, Space) must never leave the door part way open
 function drawDoorCut() {   // the key turns: a close-up of the real double exit door, which slides open on the wormhole
   const T = doorCutT, keep = { x: player.x, y: player.y, a: player.a, f: floorIdx, m: MAP, p: pitch, e: EYE };
   if (floorIdx !== doorFloor) { MAP = floorsData[doorFloor].map; floorIdx = doorFloor; }   // the door may be on the other floor
@@ -3405,18 +3436,44 @@ function render() {
   ctx.restore();
 }
 
-function drawPalm(x, base, s) {
-  const tx = x + 6 * s, ty = base - 220 * s;
-  ctx.strokeStyle = '#7a4a22'; ctx.lineWidth = 10 * s; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(x, base); ctx.quadraticCurveTo(x + 18 * s, base - 120 * s, tx, ty); ctx.stroke();
-  ctx.strokeStyle = '#2e9e4a'; ctx.lineWidth = 8 * s;
-  for (let i = 0; i < 6; i++) {
-    const a = -Math.PI / 2 + (i - 2.5) * .45 + Math.sin(t * 1.5 + i) * .05;
-    ctx.beginPath();
-    ctx.moveTo(tx, ty);
-    ctx.quadraticCurveTo(tx + Math.cos(a) * 60 * s, ty + Math.sin(a) * 60 * s - 20 * s, tx + Math.cos(a) * 100 * s, ty + Math.sin(a) * 100 * s + 20 * s);
-    ctx.stroke();
+function drawPalm(x, base, s) {   // a curved, ringed, tapering trunk; a crown of smooth-edged fronds that arch downward and sway; big coconuts; a soft shadow on the sand
+  const L = ctx, sway = Math.sin(t * .8 + x * .01) * 5 * s;
+  L.save(); L.lineJoin = L.lineCap = 'round';
+  L.fillStyle = 'rgba(90,55,10,.22)'; L.beginPath(); L.ellipse(x + 30 * s, base + 4 * s, 52 * s, 7 * s, 0, 0, 7); L.fill();   // the shadow on the sand
+  const tx = x + 14 * s + sway, ty = base - 220 * s, qx = x + 30 * s + sway * .4, qy = base - 120 * s;                            // the trunk's curve: start, control and top
+  const pt = u => [(1 - u) * (1 - u) * x + 2 * (1 - u) * u * qx + u * u * tx, (1 - u) * (1 - u) * base + 2 * (1 - u) * u * qy + u * u * ty];
+  const N = 16, left = [], right = [];
+  for (let i = 0; i <= N; i++) {
+    const u = i / N, p = pt(u), q = pt(Math.min(1, u + .02)), r = pt(Math.max(0, u - .02)), dx = q[0] - r[0], dy = q[1] - r[1], d = Math.hypot(dx, dy) || 1, hw = (7.4 - 3.4 * u + (u < .08 ? (.08 - u) * 40 : 0)) * s;   // it flares at the foot
+    left.push([p[0] - dy / d * hw, p[1] + dx / d * hw]); right.push([p[0] + dy / d * hw, p[1] - dx / d * hw]);
   }
+  L.beginPath(); left.forEach((p, i) => i ? L.lineTo(p[0], p[1]) : L.moveTo(p[0], p[1])); for (let i = N; i >= 0; i--) L.lineTo(right[i][0], right[i][1]); L.closePath();
+  const tg = L.createLinearGradient(x - 8 * s, 0, x + 40 * s, 0); tg.addColorStop(0, '#b07a44'); tg.addColorStop(.55, '#8a5a2c'); tg.addColorStop(1, '#5e3a1a');
+  L.fillStyle = tg; L.fill();
+  L.strokeStyle = 'rgba(55,28,8,.5)'; L.lineWidth = Math.max(1, 1.5 * s);                                                     // the rings round the trunk
+  for (let i = 1; i < N; i++) { const a = left[i], b = right[i]; L.beginPath(); L.moveTo(a[0], a[1]); L.quadraticCurveTo((a[0] + b[0]) / 2, (a[1] + b[1]) / 2 + 2.2 * s, b[0], b[1]); L.stroke(); }
+  L.strokeStyle = 'rgba(255,225,170,.3)'; L.lineWidth = Math.max(1, 1.6 * s); L.beginPath(); left.forEach((p, i) => { const q = [p[0] + (right[i][0] - p[0]) * .25, p[1] + (right[i][1] - p[1]) * .25]; i ? L.lineTo(q[0], q[1]) : L.moveTo(q[0], q[1]); }); L.stroke();   // a highlight down the lit side
+  L.beginPath(); left.forEach((p, i) => i ? L.lineTo(p[0], p[1]) : L.moveTo(p[0], p[1])); for (let i = N; i >= 0; i--) L.lineTo(right[i][0], right[i][1]); L.closePath(); L.strokeStyle = '#4a2a12'; L.lineWidth = Math.max(1, 1.6 * s); L.stroke();
+  L.fillStyle = '#4d2f14'; L.beginPath(); L.ellipse(tx, ty + 1 * s, 10 * s, 6.5 * s, 0, 0, 7); L.fill();                      // the crown's knob
+  const fr = [];
+  for (let i = 0; i < 9; i++) fr.push({ a0: -Math.PI / 2 + (i - 4) * .52, a: -Math.PI / 2 + (i - 4) * .52 + Math.sin(t * 1.5 + i * 1.3) * .04 + sway * .004, len: (90 + ((i * 37) % 5) * 5) * s, i });
+  fr.sort((p, q) => Math.abs(Math.cos(p.a0)) - Math.abs(Math.cos(q.a0)));   // ordered by the resting angle, so the draw order never flips while they sway                                                        // upright fronds behind, drooping ones in front
+  const greens = [['#1d7a38', '#2fa14e'], ['#27903f', '#47bd62'], ['#1a6e34', '#2b9549']];
+  for (const f of fr) {
+    const ox = tx, oy = ty - 1 * s, dr = f.len * (.1 + .32 * Math.abs(Math.cos(f.a))) * (1 - .5 * ((k) => k * k * (3 - 2 * k))(Math.max(0, Math.min(1, (Math.sin(f.a) + .25) / .5)))), ex = ox + Math.cos(f.a) * f.len, ey = oy + Math.sin(f.a) * f.len + dr, cx2 = ox + Math.cos(f.a) * f.len * .6, cy2 = oy + Math.sin(f.a) * f.len * .6 - f.len * .06;   // the rib leaves along its angle and arches over, so the tip hangs lower than the base
+    const M = 12, lp = [], rp = [], wMax = 9 * s;
+    for (let k = 0; k <= M; k++) {
+      const u = k / M, v = 1 - u, px = v * v * ox + 2 * v * u * cx2 + u * u * ex, py = v * v * oy + 2 * v * u * cy2 + u * u * ey, dx = 2 * v * (cx2 - ox) + 2 * u * (ex - cx2), dy = 2 * v * (cy2 - oy) + 2 * u * (ey - cy2), d = Math.hypot(dx, dy) || 1;
+      const w = wMax * Math.sin(Math.PI * Math.pow(u, .8));   // a smooth, pointed leaf: widest a little before the middle, no serrations
+      lp.push([px - dy / d * w, py + dx / d * w]); rp.push([px + dy / d * w, py - dx / d * w]);
+    }
+    const g = greens[f.i % 3], lg = L.createLinearGradient(ox, oy, ex, ey); lg.addColorStop(0, g[0]); lg.addColorStop(1, g[1]);
+    L.beginPath(); lp.forEach((p, k) => k ? L.lineTo(p[0], p[1]) : L.moveTo(p[0], p[1])); for (let k = M; k >= 0; k--) L.lineTo(rp[k][0], rp[k][1]); L.closePath();
+    L.fillStyle = lg; L.fill(); L.strokeStyle = 'rgba(8,60,25,.55)'; L.lineWidth = Math.max(1, 1 * s); L.stroke();
+    L.strokeStyle = '#146029'; L.lineWidth = Math.max(1, 1.8 * s); L.beginPath(); L.moveTo(ox, oy); L.quadraticCurveTo(cx2, cy2, ex, ey); L.stroke();   // the rib
+  }
+  for (const [cx, cy, r] of [[-7, 8, 7.5], [6.5, 9, 7.5], [-.5, 14.5, 7.8]]) { L.fillStyle = '#6b4220'; L.beginPath(); L.arc(tx + cx * s, ty + cy * s, r * s, 0, 7); L.fill(); L.strokeStyle = '#3d2410'; L.lineWidth = Math.max(1, 1.1 * s); L.stroke(); L.fillStyle = 'rgba(255,220,170,.45)'; L.beginPath(); L.arc(tx + (cx - 2.4) * s, ty + (cy - 2.4) * s, 2.1 * s, 0, 7); L.fill(); }   // coconuts, in front of the fronds so they show
+  L.restore();
 }
 
 function drawLevelCard(T, txt, dur = 3.2, sub) {           // a title card at the start of a level; sub is one line of text, or an array of lines
@@ -3568,34 +3625,43 @@ function drawBeachScene(bike) {
     const cx = ((i * 230 + t * 14) % (W + 200)) - 100, cy = 60 + (i % 2) * 40;
     ctx.beginPath(); ctx.arc(cx, cy, 26, 0, 7); ctx.arc(cx + 28, cy - 8, 20, 0, 7); ctx.arc(cx + 54, cy, 24, 0, 7); ctx.fill();
   }
-  // sea
+  // sea: a pale haze at the horizon, deeper blue in the middle, turquoise shallows next to the sand
   const sea = ctx.createLinearGradient(0, horizon, 0, shore);
-  sea.addColorStop(0, '#2fb8e6'); sea.addColorStop(1, '#0a6fb0');
+  sea.addColorStop(0, '#a6ecf8'); sea.addColorStop(.1, '#3cc4ec'); sea.addColorStop(.55, '#1b8fd0'); sea.addColorStop(.86, '#17a9cc'); sea.addColorStop(1, '#72e2d2');
   ctx.fillStyle = sea; ctx.fillRect(0, horizon, W, shore - horizon);
-  // sparkles on the water
-  ctx.fillStyle = 'rgba(255,255,255,.7)';
-  for (let i = 0; i < 30; i++) {
-    const x = (i * 53 + t * 40) % W, y = horizon + 6 + (i * 17) % (shore - horizon - 12);
-    ctx.fillRect(x, y, 6, 2);
+  // the sun's glitter: a column of dashes under the sun that widens toward the beach, each one twinkling on its own
+  for (let i = 0; i < 70; i++) {
+    const f = (i * .6180339) % 1, g = (i * .7548777) % 1, y = horizon + 4 + f * f * (shore - horizon - 12), spread = 12 + (y - horizon) * .5;
+    const x = sx + (g - .5) * 2 * spread + Math.sin(t * .9 + i) * 5, a = Math.max(0, Math.sin(t * 2.6 + i * 1.7)) * .85;
+    ctx.fillStyle = `rgba(255,255,235,${a})`; ctx.fillRect(x - 5 - f * 6, y, 10 + f * 12, 1.4 + f * 1.8);
   }
-  // rolling waves
-  ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2;
-  for (let r = 0; r < 4; r++) {
-    const y = horizon + 14 + r * 22;
-    ctx.beginPath();
-    for (let x = 0; x <= W; x += 20) ctx.lineTo(x, y + Math.sin(x * .03 + t * 2 + r) * 4);
-    ctx.stroke();
+  for (let i = 0; i < 18; i++) {                                   // a few stray twinkles elsewhere on the water
+    const x = (i * 97 + 31) % W, y = horizon + 8 + (i * 41) % (shore - horizon - 16), a = Math.max(0, Math.sin(t * 2 + i * 2.3)) * .6;
+    ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.fillRect(x, y, 5, 1.6);
+  }
+  // rolling swells: rows spread out and grow toward the beach, each a bright crest over a faint trough
+  for (let r = 0; r < 8; r++) {
+    const d = r / 7, y0 = horizon + 10 + (shore - horizon - 26) * Math.pow(d, 1.6), amp = 1.5 + d * 5, fq = .06 - d * .033, lw = 1 + d * 2.2;
+    const wy = x => y0 + Math.sin(x * fq + t * (1.2 + d) + r * 1.7) * amp + Math.sin(x * fq * 2.3 - t * .8 + r) * amp * .35;
+    ctx.strokeStyle = `rgba(6,70,130,${.1 + d * .12})`; ctx.lineWidth = lw + 1;
+    ctx.beginPath(); for (let x = 0; x <= W + 12; x += 12) ctx.lineTo(x, wy(x) + lw + 3); ctx.stroke();
+    ctx.strokeStyle = `rgba(255,255,255,${.28 + d * .4})`; ctx.lineWidth = lw;
+    ctx.beginPath(); for (let x = 0; x <= W + 12; x += 12) ctx.lineTo(x, wy(x)); ctx.stroke();
   }
   drawYacht(tb, horizon);
   // sand
   const sand = ctx.createLinearGradient(0, shore, 0, H);
   sand.addColorStop(0, '#ffe9b0'); sand.addColorStop(1, '#f5cf85');
   ctx.fillStyle = sand; ctx.fillRect(0, shore, W, H - shore);
-  // foam at the shoreline
-  ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 5;
-  ctx.beginPath();
-  for (let x = 0; x <= W; x += 20) ctx.lineTo(x, shore - 4 + Math.sin(x * .02 + t * 3) * 6);
-  ctx.stroke();
+  // the shoreline: shallows, a strip of wet sand, then layered foam with bubbles, all rolling in and out
+  const shY = x => shore - 4 + Math.sin(x * .02 + t * 3) * 6 + Math.sin(x * .055 - t * 1.7) * 3;
+  ctx.fillStyle = 'rgba(140,100,45,.24)'; ctx.beginPath(); ctx.moveTo(0, shY(0) + 2); for (let x = 12; x <= W + 12; x += 12) ctx.lineTo(x, shY(x) + 2); for (let x = W + 12; x >= 0; x -= 12) ctx.lineTo(x, shY(x) + 13 + Math.sin(x * .04 - t * 1.2) * 3); ctx.closePath(); ctx.fill();   // wet sand
+  ctx.fillStyle = 'rgba(140,238,222,.38)'; ctx.beginPath(); ctx.moveTo(0, shY(0) + 1); for (let x = 12; x <= W + 12; x += 12) ctx.lineTo(x, shY(x) + 1); for (let x = W + 12; x >= 0; x -= 12) ctx.lineTo(x, shY(x) - 15 - Math.sin(x * .03 + t * 1.4) * 4); ctx.closePath(); ctx.fill();   // the shallows
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 3; ctx.beginPath(); for (let x = 0; x <= W + 12; x += 12) ctx.lineTo(x, shY(x) - 11 + Math.sin(x * .05 + t * 2.2) * 2); ctx.stroke();   // a trailing line of foam
+  ctx.strokeStyle = 'rgba(255,255,255,.92)'; ctx.lineWidth = 5; ctx.beginPath(); for (let x = 0; x <= W + 12; x += 12) ctx.lineTo(x, shY(x)); ctx.stroke();   // the leading edge
+  ctx.fillStyle = 'rgba(255,255,255,.75)';
+  for (let i = 0; i < 40; i++) { const x = (i * 23 + 7) % W, y = shY(x) + 2 + ((i * 13) % 9) - 3 * Math.sin(t * 2 + i); ctx.beginPath(); ctx.arc(x, y, 1 + (i % 3) * .8, 0, 7); ctx.fill(); }   // bubbles
   const m = bike && state === 'ascend' ? asT - MOTO.t0 : -1;      // seconds since the motorcycle appeared
   if (m >= 0) drawMotoTracks(m);
   drawPalm(W * .12, H * .9, 1);
@@ -4490,7 +4556,7 @@ function drawSergeant(T, hy, dcx) {   // a simplified cel-shaded drill sergeant 
     c.save(); c.translate(x, y); c.rotate(a);
     cel(cu, () => c.roundRect(-.3 * v, -1.0 * v, 2.0 * v, 2.0 * v, .6 * v), SKIN, SKD);
     cel(cu, () => capsule(c, 1.3 * v, -.5 * v, (1.3 + ext) * v, -.5 * v, .62 * v), SKIN, SKD);
-    for (const [fx, fy, r] of [[1.65, .05, .5], [1.6, .58, .48], [1.45, 1.05, .42]]) cel(cu, () => c.arc(fx * v, fy * v, r * v, 0, 7), SKIN, SKD);
+    for (const [fx, fy, r] of [[1.0, .05, .5], [.95, .58, .48], [.8, 1.05, .42]]) cel(cu, () => c.arc(fx * v, fy * v, r * v, 0, 7), SKIN, SKD);
     cel(cu, () => capsule(c, .4 * v, -1.0 * v, (.4 + 1.1 * th) * v, (-1.0 - .3 * th) * v, .55 * th * v), SKIN, SKD);
     c.restore();
   };
@@ -4509,8 +4575,13 @@ function drawSergeant(T, hy, dcx) {   // a simplified cel-shaded drill sergeant 
   [['#d63b4a', -3.3], ['#e8c23a', -2.8], ['#3a8fd6', -2.3]].forEach(([col, bx]) => { c.fillStyle = col; c.fillRect(bx * v, -12.9 * v, .45 * v, .6 * v); });   // ribbons
   cel(cu, () => c.roundRect(-3.9 * v, -8.9 * v, 7.8 * v, .9 * v, .25 * v), '#2a1c10', null);                                  // belt and brass buckle
   cel(cu, () => c.roundRect(-.8 * v, -9.0 * v, 1.6 * v, 1.1 * v, .3 * v), '#e0b843', dk('#e0b843'));
-  cel(cu, () => capsule(c, -4.3 * v, -13.2 * v, -5.3 * v, -7.4 * v, 2.2 * v), JACK, dk(JACK));                                // the left arm, fist at his side
-  hand(-5.3 * v, -7.4 * v, 1.65, .5, .5);
+  { const ex = -7.4 * v, ey = -11.0 * v, wx2 = -5.0 * v, wy2 = -8.9 * v, ow = Math.max(1.4, v * .12);                          // the left arm, akimbo: elbow out, forearm back to the hip; both segments share one outline pass and one fill pass so no joint shows
+    for (const pass of [0, 1]) {
+      c.fillStyle = pass ? JACK : INK;
+      for (const [x0, y0, x1, y1] of [[-4.3 * v, -13.2 * v, ex, ey], [ex, ey, wx2, wy2]]) { c.beginPath(); capsule(c, x0, y0, x1, y1, 2.2 * v + (pass ? 0 : ow * 2)); c.fill(); }
+    }
+  }
+  hand(-5.0 * v, -8.9 * v, .25, .6, .5);   // the left hand rests on his hip, fingers wrapped round the front of it
   const cs = Math.cos(ang), sn = Math.sin(ang), wx = 4.3 * v + cs * len, wy = -13.2 * v + sn * len;                           // the pointing arm: one straight capsule from the shoulder
   cel(cu, () => capsule(c, 4.3 * v, -13.2 * v, wx, wy, 2.2 * v), JACK, dk(JACK));
   hand(wx, wy, ang, .5 + 1.2 * ss(cl((raise - .25) / .6)));
@@ -5224,7 +5295,7 @@ function hitBoss() {
 function bossShoot(ux, uy) {
   const frac = boss.hp / boss.max, base = Math.atan2(uy, ux);
   const speed = TUNING.rainbowSpeed[frac > .66 ? 0 : frac > .33 ? 1 : 2];
-  const fire = a => { if (rainbows.length < TUNING.rainbowMax) rainbows.push({ eye0: EYE, x: boss.x + Math.cos(a) * .9, y: boss.y + Math.sin(a) * .9, vx: Math.cos(a) * speed, vy: Math.sin(a) * speed, life: 0, alive: true, ph: Math.random() * 6, gummy: frac > .66, flame: frac <= .33, gc: Math.floor(Math.random() * 5), hc: Math.floor(Math.random() * 7) }); };   // gummy bears first, then rainbows, and in the last stage hearts of every color   // gummy bears until the first breakpoint, then rainbows
+  const fire = a => { if (rainbows.length < TUNING.rainbowMax) rainbows.push({ eye0: EYE, x: boss.x + Math.cos(a) * .9, y: boss.y + Math.sin(a) * .9, vx: Math.cos(a) * speed, vy: Math.sin(a) * speed, life: 0, alive: true, ph: Math.random() * 6, gummy: frac > .66, flame: frac <= .33, gc: Math.floor(Math.random() * 5), hc: frac <= .33 ? nextHeartColor() : 0 }); };   // gummy bears first, then rainbows, and in the last stage hearts of every color   // gummy bears until the first breakpoint, then rainbows
   if (frac > .66) fire(base);
   else if (frac > .33) [-.28, 0, .28].forEach(o => fire(base + o));
   else {
@@ -5375,7 +5446,7 @@ function updateBoss(dt) {
   }
 }
 
-const WITTY = { doctor: DIALOG.doctor_witty, builder: DIALOG.builder_witty, baby: DIALOG.baby_witty, banana: DIALOG.banana_witty };
+const WITTY = { doctor: DIALOG.doctor_witty, builder: DIALOG.builder_witty, baby: DIALOG.baby_witty, banana: DIALOG.banana_witty, karate: DIALOG.karate_witty };
 const wittyCount = {};
 function wittyLine(s) {                                    // each of the three rotates through its own one-liners, even if it dies of happiness
   const k = s.baby ? 'baby' : s.look.role, lines = WITTY[k];
@@ -5383,7 +5454,7 @@ function wittyLine(s) {                                    // each of the three 
   wittyCount[k] = wittyCount[k] === undefined ? Math.floor(Math.random() * lines.length) : wittyCount[k] + 1;
   return lines[wittyCount[k] % lines.length];
 }
-const ROLE_LINES = { police: DIALOG.police_happy, fire: DIALOG.fire_happy, builder: DIALOG.builder_happy, doctor: DIALOG.doctor_happy, banana: DIALOG.banana_witty };
+const ROLE_LINES = { police: DIALOG.police_happy, fire: DIALOG.fire_happy, builder: DIALOG.builder_happy, doctor: DIALOG.doctor_happy, banana: DIALOG.banana_witty, karate: DIALOG.karate_witty };
 const HUG_LINES = { grandma: DIALOG.grandma_hug, grandpa: DIALOG.grandpa_hug };
 
 function huggerStep(g, dt) {
@@ -5663,7 +5734,7 @@ function update(dt) {
   hurtT = Math.max(0, hurtT - dt);
   if (state === 'ascend') { asT += dt; if (levelNo < 3 && asT > (levelNo === 1 ? .9 : 8.5)) { carryCandies = candies; levelNo++; reset(); } }
   if (state === 'doorcut') {
-    doorCutT += dt; doorOpenAmt = opEase(opClamp((doorCutT - 1.0) / 1.7));   // the real door slides open
+    doorCutT += dt; doorOpenAmt = doorCutT >= 2.7 ? 1 : opEase(opClamp((doorCutT - 1.0) / 1.7));   // the door slides open and stays open
     if (doorCutStage === 0 && doorCutT > 1.0) { doorCutStage = 1; sfx([[95, .7, 'sawtooth'], [70, .8, 'sawtooth', .15]]); }   // the doors creak
     if (doorCutStage === 1 && doorCutT > 1.6) { doorCutStage = 2; sfx([[392, .6, 'triangle'], [587, .7, 'triangle', .15], [784, .9, 'triangle', .3]]); }   // the wormhole swells
     if (doorCutT >= DOORCUT_T) endDoorCut();
@@ -5771,10 +5842,11 @@ function update(dt) {
       sfx([[784, .1, 'triangle'], [1046, .25, 'triangle', .08]]);
       startDoorCut();
     }
+    if (hasKey && doorOpenAmt < 1) doorOpenAmt = 1;   // once the key is held the door is always fully open
     doorTalk = Math.max(0, doorTalk - dt);
     if (floorIdx === doorFloor && MAP[doorY][doorX] === '2' && Math.hypot(doorX + .5 - player.x, doorY + .5 - player.y) < 1.2) {
       if (hasKey) {
-        if (doorOpenAmt >= 1 && Math.hypot(doorX + .5 - player.x, doorY + .5 - player.y) < 1.0) {   // the door stands open: touch it to go through
+        if (doorOpenAmt >= 1 && Math.hypot(doorX + .5 - player.x, doorY + .5 - player.y) < 1.5) {   // the door stands open: touch it to go through
           state = 'ascend'; asT = 0;
           sfx([[523, .15, 'triangle'], [659, .15, 'triangle', .12], [784, .15, 'triangle', .24], [1047, .6, 'triangle', .36]]);
         }
@@ -5938,90 +6010,3 @@ function enableTM() {
     const s = e.pointerId === tj.id ? tj : e.pointerId === tl.id ? tl : null; if (!s || e.pointerType !== 'touch') return;
     const q = lp(e); let dx = q.x - s.x0, dy = q.y - s.y0; const m = Math.hypot(dx, dy); s.max = Math.max(s.max, m);
     if (m > 46) { dx *= 46 / m; dy *= 46 / m; }
-    (s === tj ? tnubEl : tlnubEl).style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
-    if (s === tj) {
-      if (m > 14) { const ax = dx / Math.min(m, 46), ay = dy / Math.min(m, 46); keys.KeyD = ax > .38; keys.KeyA = ax < -.38; keys.KeyS = ay > .38; keys.KeyW = ay < -.38; }
-      else keys.KeyW = keys.KeyA = keys.KeyS = keys.KeyD = false;
-    } else {                                                  // the right thumb drags the view like a first-person shooter's touch look: the view turns by exactly as much as the finger moves, and stops the moment it does
-      tl.dx = dx; tl.dy = dy; tl.rx = q.x - s.x0;
-      if (state === 'play') {
-        const Wl = isRot() ? innerHeight : innerWidth, Hl = isRot() ? innerWidth : innerHeight;
-        player.a += (q.x - tl.lx) * (3.4 / Wl);                    // a drag across the whole screen turns about 195 degrees
-        pitch = Math.max(-H * .3, Math.min(H * .3, pitch - (q.y - tl.ly) * (H * 1.1 / Hl))); pitchIdle = 0;
-      }
-      tl.lx = q.x; tl.ly = q.y;
-    }
-  }, { passive: true });
-  const up = e => {
-    const s = e.pointerId === tj.id ? tj : e.pointerId === tl.id ? tl : null; if (!s) return;
-    if (e.type === 'pointerup' && state === 'play' && performance.now() - s.t0 < 260 && s.max < 16) synthKey('Space', ' ');   // a quick tap gives candy
-    if (s === tj) { keys.KeyW = keys.KeyA = keys.KeyS = keys.KeyD = false; resetStick(tjoyEl, tnubEl); } else { tl.dx = tl.dy = tl.rx = 0; resetStick(tlookEl, tlnubEl); }
-    s.id = null;
-  };
-  document.addEventListener('pointerup', up, { passive: true }); document.addEventListener('pointercancel', up, { passive: true });
-  tskipEl.addEventListener('pointerdown', e => { e.preventDefault(); synthKey('Space', ' '); });
-  // a tap on the empty space around the canvas counts as a tap on the screen
-  document.addEventListener('click', e => {
-    if (e.target === cv || e.target.closest('#tc')) return;
-    if (['credits', 'title', 'opening', 'intro', 'bossintro', 'lose', 'win', 'ascend'].includes(state)) cv.dispatchEvent(new MouseEvent('click', { clientX: -9999, clientY: -9999 }));
-  });
-  // no browser gestures: no scrolling, pinch zoom, long-press menus
-  document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
-  document.addEventListener('gesturestart', e => e.preventDefault());
-  document.addEventListener('contextmenu', e => e.preventDefault());
-  document.addEventListener('pointerdown', () => {
-    try { if (AC && AC.state === 'suspended') AC.resume(); } catch (x) {}   // iOS only lets sound start from a touch
-    if (tTriedFS) return; tTriedFS = true;                                   // where the browser allows it, go fullscreen and lock the screen to landscape
-    try { const el = document.documentElement, pr = el.requestFullscreen ? el.requestFullscreen() : el.webkitRequestFullscreen && el.webkitRequestFullscreen(); Promise.resolve(pr).then(() => screen.orientation && screen.orientation.lock && screen.orientation.lock('landscape')).catch(() => {}); } catch (x) {}
-  }, { passive: true });
-  tuiKey = ''; touchUI();
-}
-try { if (matchMedia('(pointer: coarse)').matches) enableTM(); } catch (e) {}
-addEventListener('touchstart', () => { if (!TM) enableTM(); }, { once: true, passive: true });   // a touch screen on a laptop switches the controls on too
-
-let last = performance.now(), miniTick = 0;
-function loop(now) {
-  let rem = Math.min(.1, (now - last) / 1000);   // real elapsed time, simulated in small steps
-  last = now;
-  try {
-    bossMusicFade();
-    if (AC) { loadTrack(1); if (trackBuf[1]) { loadTrack(2); loadTrack('2b'); loadTrack(3); loadTaiko(); loadBossSfx(); loadPlayerShot(); } }   // decode the recorded music ahead of time so level 1 starts on the first frame
-    syncEndingAudio();
-    syncTitleAudio();
-    touchUI();
-    touchLook(rem);
-    if (startFadeT >= 0) {                                   // leaving the title: the game starts once the screen is white
-      startFadeT += rem;
-      if (pendingStart && startFadeT >= START_OUT) { const f = pendingStart; pendingStart = null; f(); }
-      if (startFadeT >= START_OUT + START_IN) startFadeT = -1;
-    }
-    while (rem > 1e-6) { const step = Math.min(rem, .033); update(step); rem -= step; }
-    if (state === 'title') drawTitle();
-    else if (state === 'bossintro') drawBossIntro();
-    else if (state === 'doorcut') drawDoorCut();
-    else if (state === 'opening') drawOpening();
-    else if (state === 'credits') drawCredits();
-    else if (state === 'ascend') { if (levelNo === 1) render(); else if (levelNo < 3) drawTransition(); else drawEnding(); }
-    else render();
-    
-    if (state === 'ascend' && levelNo === 1) { ctx.fillStyle = `rgba(255,255,255,${Math.min(1, asT / .7)})`; ctx.fillRect(0, 0, W, H); }   // fade to white, then the next level
-    if (state === 'intro' && levelNo === 2 && introT < 3.2) drawLevelCard(introT, 'Level 2', 3.2, 'Did You Bring Enough To Share?');
-    if (state === 'climb') { ctx.fillStyle = `rgba(20,10,40,${Math.sin(Math.min(1, climbT / 1.6) * Math.PI) * .75})`; ctx.fillRect(0, 0, W, H); }
-    if (startFadeT >= 0) {                                   // the white-out: quick up on the sound's opening hit, then a slow clearing as it dies away
-      const q = startFadeT < START_OUT ? startFadeT / START_OUT : 1 - (startFadeT - START_OUT) / START_IN;
-      ctx.fillStyle = `rgba(255,255,255,${Math.max(0, Math.min(1, startFadeT < START_OUT ? q : q * q))})`; ctx.fillRect(0, 0, W, H);
-    }
-    if (state === 'play' && levelNo === 1 && t - levelCardAt < 2.2) drawLevelCard(t - levelCardAt, 'Level 1', 2.2, 'Farmer Brownie - Jolly as a Rancher');   // on top of the white-out
-    if ((miniTick++ & 1) === 0) drawMini();
-    updateHUD();
-  } catch (err) {
-    console.error(err);
-    msgText = 'Glitch: ' + (err && err.message ? err.message : err); msgT = 1;
-  }
-  requestAnimationFrame(loop);
-}
-drawFace(0);
-requestAnimationFrame(loop);
-</script>
-</body>
-</html>
