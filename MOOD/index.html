@@ -51,9 +51,43 @@
   html.tm:not(.rot) #tlook{right:calc(env(safe-area-inset-right,0px) + 26px)}
   #tnub,#tlnub{position:absolute;left:34px;top:34px;width:50px;height:50px;border-radius:50%;box-sizing:border-box;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4),inset 0 -4px 6px rgba(150,160,190,.5),inset 0 3px 4px #fff;background:radial-gradient(circle at 50% 50%,rgba(70,50,110,.45) 0 14%,#dfe4f0 15% 19%,#fff 20% 72%,#e4e8f3 100%)}   /* a white breath mint: a ring with a hole in the middle and a soft shine */
   #tskip{position:absolute;top:10px;right:12px;padding:10px 12px;border-radius:99px;background:rgba(8,4,16,.7);border:2px solid #fff;color:#fff;font-size:9px;display:none;pointer-events:auto;touch-action:none}
+  /* ---- loading skeleton: shown straight away while the big script loads, then fades out ---- */
+  #boot{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#4a2d5e,#160c1e);transition:opacity .45s,visibility .45s}
+  #boot.done{opacity:0;visibility:hidden;pointer-events:none}
+  #boot .bk-stage,#boot .bk-bar{flex:none;width:min(96vw,calc((100vh - 120px) * 1.6));position:relative;overflow:hidden}
+  #boot .bk-stage{aspect-ratio:800/500;border-radius:14px;background:#2a1838;box-shadow:0 0 0 4px #ff8fb1,0 0 40px rgba(255,143,177,.35),0 24px 60px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center}
+  #boot .bk-bar{margin-top:12px;height:76px;border-radius:16px;background:linear-gradient(#4a2d66,#2a1838);box-shadow:0 0 0 3px #ffd166;display:flex;align-items:center;gap:16px;padding:0 16px;box-sizing:border-box}
+  #boot .bk-shim::after,#boot .bk-bar::after,#boot .bk-stage::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.09) 50%,transparent 70%);transform:translateX(-100%);animation:bkShim 1.8s ease-in-out infinite}
+  #boot .bk-blk{width:56px;height:56px;border-radius:14px;flex:none;background:rgba(255,255,255,.1)}
+  #boot .bk-pill{flex:1;height:18px;border-radius:99px;background:rgba(255,255,255,.1)}
+  #boot .bk-widget{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,2.2vh,18px)}
+  #boot .bk-pop{position:relative;width:clamp(48px,11vh,84px);height:clamp(48px,11vh,84px)}
+  #boot .bk-disc{width:100%;height:100%;border-radius:50%;background:repeating-conic-gradient(#ff6b9a 0 22.5deg,#fff 22.5deg 45deg);box-shadow:0 0 0 4px #fff,0 0 0 7px #ff8fb1,0 0 24px rgba(255,143,177,.6);animation:bkSpin 1.2s linear infinite}
+  #boot .bk-pop::before{content:"";position:absolute;left:50%;top:50%;width:26%;height:26%;margin:-13% 0 0 -13%;border-radius:50%;background:#ffd166;box-shadow:0 0 0 3px #fff;z-index:1}
+  #boot .bk-drops{display:flex;gap:clamp(6px,1.6vh,12px);height:clamp(18px,4vh,30px);align-items:flex-end}
+  #boot .bk-drops i{width:clamp(10px,2.4vh,16px);height:clamp(10px,2.4vh,16px);border-radius:50% 50% 42% 42%;background:var(--c);box-shadow:inset -2px -3px 0 rgba(0,0,0,.18),inset 2px 2px 0 rgba(255,255,255,.45);animation:bkBounce .9s ease-in-out infinite;animation-delay:var(--d)}
+  #boot .bk-txt{font-size:clamp(9px,1.7vh,14px);letter-spacing:2px;text-shadow:0 2px 0 #000,0 0 16px #ff8fb1;white-space:nowrap}
+  #boot .bk-txt b{display:inline-block;font-weight:400;animation:bkWob 1s ease-in-out infinite;animation-delay:var(--d)}
+  #boot .bk-pole{width:clamp(130px,30vh,230px);height:clamp(10px,2vh,16px);border-radius:99px;border:3px solid #fff;box-sizing:content-box;background:repeating-linear-gradient(-45deg,#ff6b9a 0 9px,#fff 9px 18px);background-size:25.46px 100%;animation:bkPole .7s linear infinite;box-shadow:0 0 14px rgba(255,143,177,.5)}
+  @keyframes bkSpin{to{transform:rotate(360deg)}}
+  @keyframes bkBounce{0%,100%{transform:translateY(0) scaleY(1)}45%{transform:translateY(-100%) scaleY(1.08)}85%{transform:translateY(0) scaleY(.82)}}
+  @keyframes bkWob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @keyframes bkPole{to{background-position:25.46px 0}}
+  @keyframes bkShim{to{transform:translateX(100%)}}
+  @media (prefers-reduced-motion:reduce){#boot *,#boot *::after{animation-duration:3s!important}}
 </style>
 </head>
 <body>
+<div id="boot" role="status" aria-label="Loading">
+  <div class="bk-stage"><div class="bk-widget">
+    <div class="bk-pop"><div class="bk-disc"></div></div>
+    <div class="bk-drops"><i style="--c:#ff6b9a;--d:0s"></i><i style="--c:#ffd166;--d:.12s"></i><i style="--c:#8be36b;--d:.24s"></i><i style="--c:#5ec8ff;--d:.36s"></i><i style="--c:#c084fc;--d:.48s"></i></div>
+    <div class="bk-txt"><b style="--d:0s">L</b><b style="--d:.08s">O</b><b style="--d:.16s">A</b><b style="--d:.24s">D</b><b style="--d:.32s">I</b><b style="--d:.40s">N</b><b style="--d:.48s">G</b><b style="--d:.56s">.</b><b style="--d:.64s">.</b><b style="--d:.72s">.</b></div>
+    <div class="bk-pole"></div>
+  </div></div>
+  <div class="bk-bar"><div class="bk-blk"></div><div class="bk-pill"></div><div class="bk-blk"></div></div>
+</div>
+<script>setTimeout(function(){var b=document.getElementById('boot');if(b)b.className='done'},45000)</script>
 <div id="wrap">
   <div id="stage">
     <canvas id="c"></canvas>
@@ -6155,6 +6189,7 @@ function loop(now) {
 }
 drawFace(0);
 requestAnimationFrame(loop);
+requestAnimationFrame(() => { const bt = document.getElementById('boot'); if (bt) { bt.className = 'done'; setTimeout(() => bt.remove(), 600); } });   // the loading skeleton goes once the game has drawn its first frame
 </script>
 </body>
 </html>
