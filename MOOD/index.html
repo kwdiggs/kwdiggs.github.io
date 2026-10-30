@@ -75,6 +75,33 @@
   @keyframes bkPole{to{background-position:25.46px 0}}
   @keyframes bkShim{to{transform:translateX(100%)}}
   @media (prefers-reduced-motion:reduce){#boot *,#boot *::after{animation-duration:3s!important}}
+  /* ---- upright phone: asks for a quarter turn ---- */
+  #flip{position:fixed;inset:0;z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;gap:28px;background:radial-gradient(circle at 50% 35%,#4a2d5e,#160c1e);font-family:"Press Start 2P",monospace;color:#fff;text-align:center;padding:24px;box-sizing:border-box}
+  #flip.show{display:flex}
+  #flip .fl-ico{position:relative;width:200px;height:200px;display:flex;align-items:center;justify-content:center}
+  #flip .fl-phone{width:76px;height:130px;animation:flTurn 3.2s ease-in-out infinite;filter:drop-shadow(0 0 14px rgba(255,143,177,.7))}
+  #flip .fl-arrow{position:absolute;inset:0;width:100%;height:100%;animation:flPulse 1.6s ease-in-out infinite}
+  #flip .fl-t1{font-size:15px;line-height:1.7;text-shadow:0 3px 0 #000,0 0 18px #ff8fb1}
+  #flip .fl-t2{font-size:9px;line-height:1.9;opacity:.8}
+  #flip .fl-drops{display:flex;gap:10px}
+  #flip .fl-drops i{width:12px;height:12px;border-radius:50% 50% 42% 42%;background:var(--c);box-shadow:inset -2px -3px 0 rgba(0,0,0,.18),inset 2px 2px 0 rgba(255,255,255,.45);animation:bkBounce .9s ease-in-out infinite;animation-delay:var(--d)}
+  @keyframes flTurn{0%,15%{transform:rotate(0)}50%,80%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+  @keyframes flPulse{0%,100%{opacity:.45}50%{opacity:1}}
+  /* ---- title screen: gear button and debug menu ---- */
+  #dbgGear{position:fixed;top:12px;right:12px;z-index:60;width:44px;height:44px;padding:0;border-radius:50%;border:3px solid #fff;background:rgba(43,16,64,.82);box-shadow:0 0 0 2px #ff8fb1,0 4px 14px rgba(0,0,0,.5);cursor:pointer;display:none;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+  #dbgGear.show{display:flex}
+  #dbgGear svg{width:24px;height:24px;transition:transform .5s}
+  #dbgGear:hover svg{transform:rotate(90deg)}
+  #dbgMenu{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;background:rgba(10,4,20,.74);font-family:"Press Start 2P",monospace;color:#fff}
+  #dbgMenu.show{display:flex}
+  #dbgMenu .dbg-card{position:relative;width:min(92vw,460px);max-height:92vh;overflow:auto;box-sizing:border-box;padding:18px 18px 16px;border-radius:16px;background:#2a1838;border:3px solid #ff8fb1;box-shadow:0 0 0 3px #2b1040,0 20px 60px rgba(0,0,0,.65)}
+  #dbgMenu h2{margin:0 36px 14px 0;font-size:15px;font-weight:400;color:#ffd166;text-shadow:0 3px 0 #000;letter-spacing:1px}
+  #dbgMenu .dbg-x{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;border:2px solid #fff;background:#4a2d66;color:#fff;font:400 14px "Press Start 2P",monospace;cursor:pointer;padding:0}
+  #dbgMenu .dbg-h{margin:12px 0 7px;font-size:8px;letter-spacing:1px;color:#ff8fb1}
+  #dbgMenu .dbg-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+  #dbgMenu .dbg-b{font:400 10px "Press Start 2P",monospace;color:#fff;text-align:left;padding:11px 12px;border-radius:10px;border:2px solid #7b52a0;border-left:8px solid var(--c,#ff6b9a);background:#3b2354;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  #dbgMenu .dbg-b:hover,#dbgMenu .dbg-b:focus-visible{background:#54307a;outline:none;border-color:#fff}
+  #dbgMenu .dbg-b:active{transform:translateY(1px)}
 </style>
 </head>
 <body>
@@ -86,6 +113,35 @@
     <div class="bk-pole"></div>
   </div></div>
   <div class="bk-bar"><div class="bk-blk"></div><div class="bk-pill"></div><div class="bk-blk"></div></div>
+</div>
+<button id="dbgGear" type="button" aria-label="Debug menu"><svg viewBox="0 0 24 24" fill="#fff"><path d="M19.4 13a7.7 7.7 0 0 0 .1-1 7.7 7.7 0 0 0-.1-1l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.3 7.3 0 0 0-1.7-1l-.4-2.6a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.6a7.3 7.3 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.5a.5.5 0 0 0 .1.6L4.6 11a7.7 7.7 0 0 0-.1 1 7.7 7.7 0 0 0 .1 1l-2.1 1.6a.5.5 0 0 0-.1.6l2 3.5a.5.5 0 0 0 .6.2l2.5-1a7.3 7.3 0 0 0 1.7 1l.4 2.6a.5.5 0 0 0 .5.4h4a.5.5 0 0 0 .5-.4l.4-2.6a7.3 7.3 0 0 0 1.7-1l2.5 1a.5.5 0 0 0 .6-.2l2-3.5a.5.5 0 0 0-.1-.6zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg></button>
+<div id="dbgMenu" role="dialog" aria-modal="true" aria-label="Debug menu">
+  <div class="dbg-card">
+    <h2>Debug menu</h2>
+    <button class="dbg-x" type="button" aria-label="Close" data-dbg="close">&#10005;</button>
+    <div class="dbg-h">GO TO LEVEL</div>
+    <div class="dbg-grid">
+      <button class="dbg-b" style="--c:#ff6b9a" data-dbg="l1">Level 1</button>
+      <button class="dbg-b" style="--c:#ffd166" data-dbg="l2">Level 2</button>
+      <button class="dbg-b" style="--c:#8be36b" data-dbg="l3">Level 3</button>
+    </div>
+    <div class="dbg-h">WATCH</div>
+    <div class="dbg-grid">
+      <button class="dbg-b" style="--c:#5ec8ff" data-dbg="credits">Opening credits</button>
+      <button class="dbg-b" style="--c:#c084fc" data-dbg="tunnel">Tunnel scene</button>
+      <button class="dbg-b" style="--c:#ff8a3d" data-dbg="bear">Before the bear</button>
+      <button class="dbg-b" style="--c:#ff6b9a" data-dbg="end">The ending</button>
+    </div>
+  </div>
+</div>
+<div id="flip" role="alert" aria-label="Turn your phone sideways">
+  <div class="fl-ico">
+    <svg class="fl-arrow" viewBox="0 0 200 200" fill="none" stroke="#ffd166" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M34 112 A70 70 0 0 1 100 30"/><path d="M78 26 L102 30 L96 54"/><path d="M166 88 A70 70 0 0 1 100 170"/><path d="M122 174 L98 170 L104 146"/></svg>
+    <svg class="fl-phone" viewBox="0 0 76 130"><rect x="3" y="3" width="70" height="124" rx="13" fill="#2a1838" stroke="#fff" stroke-width="5"/><rect x="29" y="9" width="18" height="5" rx="2.5" fill="#fff"/><circle cx="38" cy="62" r="18" fill="#fff"/><circle cx="38" cy="62" r="14" fill="#ff6b9a"/><path d="M38 62 L38 48 M38 62 L50 55 M38 62 L50 69 M38 62 L38 76 M38 62 L26 69 M38 62 L26 55" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/><circle cx="38" cy="62" r="4" fill="#ffd166"/><rect x="26" y="116" width="24" height="4" rx="2" fill="#fff" opacity=".7"/></svg>
+  </div>
+  <div class="fl-t1">TURN YOUR PHONE<br>SIDEWAYS</div>
+  <div class="fl-drops"><i style="--c:#ff6b9a;--d:0s"></i><i style="--c:#ffd166;--d:.12s"></i><i style="--c:#8be36b;--d:.24s"></i><i style="--c:#5ec8ff;--d:.36s"></i><i style="--c:#c084fc;--d:.48s"></i></div>
+  <div class="fl-t2">MOOD PLAYS IN LANDSCAPE</div>
 </div>
 <script>setTimeout(function(){var b=document.getElementById('boot');if(b)b.className='done'},45000)</script>
 <div id="wrap">
@@ -278,6 +334,15 @@ const DIALOG = {
   "This would pair well with a nap.",
   "This culinary technology is amazing!",
   "Stupendous!"
+ ],
+ "tree_witty": [
+  "What a TREE-T!",
+  "That lit me up!",
+  "What a great present, thanks!"
+ ],
+ "cow_witty": [
+  "MOOOOD Booster!",
+  "That rang my cowbell!"
  ],
  "karate_witty": [
   "Ka-ra-taysty!",
@@ -1178,7 +1243,11 @@ function resetWorld() {
   // five special NPCs take the place of regular ones, so the counts stay the same
   const ROLES = ['police', 'fire', 'builder', 'doctor', 'baby', 'ghost', 'banana'];
   if (levelNo === 2) ROLES.push('karate');                    // level 2 has one more: a karate student
-  const picked = pickN(all.map((_, i) => i), ROLES.length);
+  let cow = null;                                              // level 2 downstairs has a person in a cow suit, chosen first so the other roles can't use up the ground floor
+  if (levelNo === 2 && floorsData[0].sprites.length) { cow = floorsData[0].sprites[Math.floor(Math.random() * floorsData[0].sprites.length)]; cow.look.role = 'cow'; cow.look.acc = null; }
+  let xtree = null;                                            // level 2 upstairs has a person in a Christmas tree costume, chosen the same way
+  if (levelNo === 2 && floorsData[1] && floorsData[1].sprites.length) { xtree = floorsData[1].sprites[Math.floor(Math.random() * floorsData[1].sprites.length)]; xtree.look.role = 'tree'; xtree.look.acc = null; }
+  const picked = pickN(all.map((_, i) => i).filter(i => all[i] !== cow && all[i] !== xtree), ROLES.length);
   picked.forEach((i, n) => {
     if (ROLES[n] === 'baby') all[i].baby = true;
     else if (ROLES[n] === 'ghost') { all[i].ghost = true; all[i].look = { ...all[i].look, shirt: '#ff8a3d', hair: '#6a4026', style: 1, skin: '#f1c49a', acc: null }; }   // a kid under a sheet
@@ -1477,7 +1546,9 @@ function drawPerson(cx, feet, u, p, happy, hug, pose) {
     builder: { top: '#5f7fa8', pants: '#3e5a86', shoes: '#6b4a2a', hand: '#d9a85a' },
     doctor:  { top: '#f6f8fc', pants: '#4fb0d4', shoes: '#e8ecf4', hand: skin },
     banana:  { top: '#ffd93b', pants: '#f2c21b', shoes: '#7a5230', hand: skin },
-    karate:  { top: '#f6f3ea', pants: '#f6f3ea', shoes: skin, hand: skin }
+    karate:  { top: '#f6f3ea', pants: '#f6f3ea', shoes: skin, hand: skin },
+    cow:     { top: '#f4f1ea', pants: '#f4f1ea', shoes: '#3a2f33', hand: '#f4f1ea' },
+    tree:    { top: '#2f8f4e', pants: '#1f6e3a', shoes: '#6b4a2a', hand: '#2f8f4e' }
   })[role] || { top: p.shirt, pants: '#3b2d52', shoes: '#2b2236', hand: skin };
   if (pose && (pose.pass === 'back' || pose.pass === 'hand')) {   // the arm around the partner's shoulders: drawn behind both bodies, and its hand on top of them
     const sd = pose.inner, sx = cx + sd * 3.2 * u, sy = y - 5.4 * u, nx = cx + sd * 5.7 * u, ny = y - 9.8 * u;
@@ -1551,6 +1622,20 @@ function drawPerson(cx, feet, u, p, happy, hug, pose) {
       for (const sd of [-1, 1]) { L.beginPath(); L.moveTo(cx + sd * 1.3 * u, y - 6.5 * u); L.quadraticCurveTo(cx + sd * 2.2 * u, y - 3.9 * u, cx + sd * 1.3 * u, y - 1.9 * u); L.stroke(); }
       L.fillStyle = '#8a5a26'; for (const [fx, fy] of [[.4, 5.2], [-.5, 3.4], [2.4, 3.0], [-2.5, 5.0]]) { L.beginPath(); L.arc(cx + fx * u, y - fy * u, .22 * u, 0, 7); L.fill(); }
       cel(u, () => L.roundRect(cx - 3.5 * u, y - 1.7 * u, 7 * u, .7 * u, .3 * u), '#7a5230', null);
+    } else if (role === 'cow') {                                                                               // the cow suit: black patches, and a bell on a red collar
+      cel(u, () => L.ellipse(cx - 1.7 * u, y - 4.6 * u, 1.3 * u, 1.0 * u, .4, 0, 7), '#2a2a32', null);
+      cel(u, () => L.ellipse(cx + 1.8 * u, y - 3.2 * u, 1.0 * u, 1.4 * u, -.3, 0, 7), '#2a2a32', null);
+      cel(u, () => L.ellipse(cx - 1.9 * u, y - 2.3 * u, .8 * u, .6 * u, 0, 0, 7), '#2a2a32', null);
+      cel(u, () => L.roundRect(cx - 2.7 * u, y - 4.9 * u, 5.4 * u, .7 * u, .3 * u), '#d62839', null);                                   // a red strap round the neck
+      cel(u, () => { L.moveTo(cx - .75 * u, y - 4.3 * u); L.lineTo(cx + .75 * u, y - 4.3 * u); L.lineTo(cx + 1.0 * u, y - 2.9 * u); L.lineTo(cx - 1.0 * u, y - 2.9 * u); L.closePath(); }, '#e8b02e', dk('#e8b02e'));   // the cowbell: nearly square
+      cel(u, () => L.ellipse(cx, y - 2.9 * u, 1.0 * u, .28 * u, 0, 0, 7), '#b57f12', null);
+      cel(u, () => L.arc(cx, y - 2.7 * u, .28 * u, 0, 7), '#3a2f33', null);
+      L.strokeStyle = 'rgba(255,255,255,.6)'; L.lineWidth = Math.max(1, .24 * u); L.lineCap = 'round'; L.beginPath(); L.moveTo(cx - .4 * u, y - 4.0 * u); L.lineTo(cx - .55 * u, y - 3.2 * u); L.stroke();
+    } else if (role === 'tree') {                                                                              // the tree suit: tinsel swags, baubles and little lights
+      L.strokeStyle = '#f2c94c'; L.lineWidth = Math.max(1, .45 * u); L.lineCap = 'round';
+      for (const [gy, sag] of [[5.7, 1.0], [3.9, 1.2], [2.3, 1.2]]) { L.beginPath(); L.moveTo(cx - 3.0 * u, y - (gy + .7) * u); L.quadraticCurveTo(cx, y - (gy - sag) * u, cx + 3.0 * u, y - (gy + .7) * u); L.stroke(); }
+      for (const [bx, by, bc] of [[-2.1, 3.4, '#e23b4e'], [1.9, 5.0, '#4aa3ff'], [.2, 2.4, '#f2c94c'], [2.2, 2.9, '#e23b4e'], [-1.6, 5.2, '#f2c94c']]) { cel(u, () => L.arc(cx + bx * u, y - by * u, .62 * u, 0, 7), bc, dk(bc)); L.fillStyle = 'rgba(255,255,255,.7)'; L.beginPath(); L.arc(cx + (bx - .2) * u, y - (by + .2) * u, .15 * u, 0, 7); L.fill(); }
+      L.fillStyle = '#fff6a8'; for (const [lx, ly] of [[-2.6, 4.6], [-.9, 4.3], [1.0, 3.2], [2.7, 4.5], [-2.6, 2.0], [1.7, 1.7]]) { L.beginPath(); L.arc(cx + lx * u, y - ly * u, .3 * u, 0, 7); L.fill(); }
     } else {
       for (const sd of [-1, 1]) cel(u, () => { L.moveTo(cx + sd * .3 * u, y - 6.9 * u); L.lineTo(cx + sd * 1.8 * u, y - 6.9 * u); L.lineTo(cx + sd * .9 * u, y - 5.3 * u); L.closePath(); }, lt(C.top, .3), C.top);   // collar
       for (const by of [4.4, 3.2]) { L.fillStyle = dk(C.top, .45); L.beginPath(); L.arc(cx, y - by * u, .3 * u, 0, 7); L.fill(); }
@@ -1604,7 +1689,7 @@ function drawPerson(cx, feet, u, p, happy, hug, pose) {
     L.fillStyle = skinD; L.beginPath(); L.ellipse(cx, y - 8 * u, .3 * u, .22 * u, 0, 0, 7); L.fill();   // nose
   }
 
-  if (role === 'banana') {                                                              // the hood covers the hair
+  if (role === 'banana' || role === 'cow' || role === 'tree') {                         // the hood covers the hair
   } else if (!(role === 'police' || role === 'fire' || role === 'builder')) {                  // hair, unless a hard hat covers it
     if (p.style === 0) cel(u, () => L.arc(cx, y - 12.8 * u, 1.4 * u, 0, 7), p.hair, dk(p.hair));
     cel(u, () => {
@@ -1640,6 +1725,25 @@ function drawPerson(cx, feet, u, p, happy, hug, pose) {
     cel(u, () => { L.moveTo(hx - 3.6 * u, hy - 2.2 * u); L.quadraticCurveTo(hx - 3.8 * u, hy - 5.8 * u, hx + 1.0 * u, hy - 6.4 * u); L.quadraticCurveTo(hx + 3.6 * u, hy - 5.6 * u, hx + 3.6 * u, hy - 2.2 * u); L.closePath(); }, '#ffd93b', dk('#ffd93b'));
     cel(u, () => { L.moveTo(hx + .1 * u, hy - 6.2 * u); L.lineTo(hx + 1.9 * u, hy - 6.4 * u); L.lineTo(hx + 2.4 * u, hy - 8.0 * u); L.lineTo(hx + .6 * u, hy - 8.1 * u); L.closePath(); }, '#7a5230', dk('#7a5230'));
     if (full) { L.strokeStyle = '#cf9f0e'; L.lineWidth = Math.max(1, .3 * u); L.beginPath(); L.moveTo(hx - 1.4 * u, hy - 3.6 * u); L.quadraticCurveTo(hx - 1.2 * u, hy - 5.4 * u, hx + .4 * u, hy - 6.0 * u); L.stroke(); shine(L, hx - 2.6 * u, hy - 3.4 * u, .5 * u, .9 * u, .5, .55); }
+  } else if (role === 'cow') {                                                          // cow hood: floppy ears, two small straight horns, a black patch and a tuft
+    const hx = cx, hy = y - 9 * u;
+    for (const sd of [-1, 1]) {
+      cel(u, () => L.ellipse(hx + sd * 4.4 * u, hy - 1.0 * u, 1.6 * u, .85 * u, sd * -.45, 0, 7), '#f4f1ea', dk('#f4f1ea'));
+      cel(u, () => L.ellipse(hx + sd * 4.5 * u, hy - 1.0 * u, .85 * u, .42 * u, sd * -.45, 0, 7), '#f7a8b8', null);
+    }
+    L.beginPath(); L.arc(hx, hy, 4.1 * u, 0, 7); L.moveTo(hx + 3.0 * u, hy); L.arc(hx, hy, 3.0 * u, 0, 7, true);
+    L.fillStyle = '#f4f1ea'; L.fill('evenodd'); L.lineWidth = lwFor(u); L.strokeStyle = dk('#f4f1ea'); L.stroke();
+    L.strokeStyle = '#2a2a32'; L.lineWidth = 1.0 * u; L.lineCap = 'butt'; L.beginPath(); L.arc(hx, hy, 3.55 * u, -1.25, .15); L.stroke();   // a black patch on one side of the hood
+    cel(u, () => L.ellipse(hx - .2 * u, hy - 3.9 * u, 1.5 * u, .75 * u, 0, 0, 7), '#2a2a32', null);
+    for (const sd of [-1, 1]) cel(u, () => { L.moveTo(hx + sd * 2.0 * u, hy - 3.55 * u); L.lineTo(hx + sd * 3.0 * u, hy - 3.25 * u); L.lineTo(hx + sd * 2.7 * u, hy - 5.2 * u); L.closePath(); }, '#fff3d6', dk('#d9c9a0'));   // two small, straight horns
+  } else if (role === 'tree') {                                                         // tree hood: a dark green ring round the face and a two-tier tree on top with baubles and a gold star
+    const hx = cx, hy = y - 9 * u;
+    L.beginPath(); L.arc(hx, hy, 4.1 * u, 0, 7); L.moveTo(hx + 3.0 * u, hy); L.arc(hx, hy, 3.0 * u, 0, 7, true);
+    L.fillStyle = '#2f8f4e'; L.fill('evenodd'); L.lineWidth = lwFor(u); L.strokeStyle = dk('#2f8f4e'); L.stroke();
+    cel(u, () => { L.moveTo(hx - 3.7 * u, hy - 3.2 * u); L.lineTo(hx + 3.7 * u, hy - 3.2 * u); L.lineTo(hx, hy - 7.8 * u); L.closePath(); }, '#2f8f4e', dk('#2f8f4e'));
+    cel(u, () => { L.moveTo(hx - 2.7 * u, hy - 5.8 * u); L.lineTo(hx + 2.7 * u, hy - 5.8 * u); L.lineTo(hx, hy - 10.0 * u); L.closePath(); }, '#3aa75c', dk('#3aa75c'));
+    for (const [bx, by, bc] of [[-1.5, 4.2, '#e23b4e'], [1.6, 4.5, '#4aa3ff'], [.1, 7.0, '#f2c94c']]) cel(u, () => L.arc(hx + bx * u, hy - by * u, .5 * u, 0, 7), bc, dk(bc));
+    cel(u, () => { for (let i = 0; i < 10; i++) { const r = i % 2 ? .6 * u : 1.4 * u, a = -Math.PI / 2 + i * Math.PI / 5; L[i ? 'lineTo' : 'moveTo'](hx + Math.cos(a) * r, hy - 10.9 * u + Math.sin(a) * r); } L.closePath(); }, '#ffd447', dk('#ffd447'));
   } else if (role === 'karate') {                                                       // white headband with a red sun and two tails
     cel(u, () => { L.moveTo(cx + 3.0 * u, y - 10.5 * u); L.lineTo(cx + 5.0 * u, y - 9.3 * u); L.lineTo(cx + 4.7 * u, y - 10.4 * u); L.lineTo(cx + 5.3 * u, y - 11.2 * u); L.lineTo(cx + 3.0 * u, y - 11.1 * u); L.closePath(); }, '#ffffff', '#c9c9d4');
     cel(u, () => { L.moveTo(cx - 3.35 * u, y - 10.9 * u); L.quadraticCurveTo(cx, y - 12.1 * u, cx + 3.35 * u, y - 10.9 * u); L.lineTo(cx + 3.35 * u, y - 9.9 * u); L.quadraticCurveTo(cx, y - 11.1 * u, cx - 3.35 * u, y - 9.9 * u); L.closePath(); }, '#ffffff', '#c9c9d4');
@@ -1911,7 +2015,7 @@ function drawBossSprite(pr, b, zbuf) {
     const bx = pr.sx + Math.sin(t * 2) * k * .25;
     bearFaceScr = { x: bx, y: feet - 11.8 * k + pitch, r: 4.5 * k, t: performance.now() };   // his face on screen (this runs inside the pitch offset)
     if (b.powerT > 0) drawBossAura(bx, feet, k, b);
-    if (b.spin) drawBearSpin(bx, feet, k, b, b.spin.rot); else drawBear(bx, feet, k, b);
+    if (b.spin && !(b.powerT > 0)) drawBearSpin(bx, feet, k, b, b.spin.rot); else drawBear(bx, feet, k, b);   // in the flame pose he always stands front-on, even if a spin was under way
     if (b.powerT > 0) {   // a few front tongues, low at his sides, so the flame wraps round him
       const fa = smooth01((2 - b.powerT) / .25) * smooth01(b.powerT / .4) * .75, sd2 = Math.floor(t * 18) * 1.7;
       ctx.save(); ctx.globalAlpha = fa;
@@ -3935,7 +4039,7 @@ function drawTitleBackground() {
 }
 
 let titlePage = 0;   // the title screen: 0 is the title, 1 is the controls
-let titleLink = null;   // where the 'Watch the ending' link is on the title screen, for clicks
+
 function jumpToEnding() {   // straight to the beach ending
   startGame();
   levelNo = 3; carryCandies = null; state = 'ascend'; asT = 0; endFadeT = -1; titlePage = 0;
@@ -3950,17 +4054,11 @@ function drawTitle() {
     ctx.strokeText('MOOD', W / 2, H / 2 - 16);
     ctx.fillStyle = '#ffd166'; ctx.fillText('MOOD', W / 2, H / 2 - 16);
     ctx.font = '600 12px "Press Start 2P", monospace'; ctx.fillStyle = '#fff';
-    ctx.fillText('Hand out sweets. Cheer up the sad. Save the day.', W / 2, H / 2 + 14);
+    ctx.lineWidth = 5; ctx.strokeStyle = '#2b1040'; ctx.lineJoin = 'round'; ctx.strokeText('Hand out sweets. Cheer up the sad. Save the day.', W / 2, H * .92 - 18);
+    ctx.fillText('Hand out sweets. Cheer up the sad. Save the day.', W / 2, H * .92 - 18);   // the tagline sits at the bottom of the band
     if (Math.sin(t * 4) > -.2) { ctx.font = '800 13px "Press Start 2P", monospace'; ctx.fillStyle = '#fff'; ctx.fillText(TM ? 'TAP TO CONTINUE' : 'PRESS ANY KEY', W / 2, H / 2 + 80); }
     ctx.font = '600 9px "Press Start 2P", monospace'; ctx.fillStyle = '#fff';
-    if (TM) drawTitleBtns();   // on a touch screen the level shortcuts are buttons
-    else { titleBtns = []; ctx.fillText('Or press 1, 2 or 3 to start on that level (T: tunnel scene)', W / 2, H / 2 + 118);
-    ctx.fillText('Press B for Bot Battle (you against the bots)', W / 2, H / 2 + 144); }
-    ctx.font = '600 11px "Press Start 2P", monospace';
-    const linkText = 'Watch the ending', lw = ctx.measureText(linkText).width, ly = H / 2 + 176;
-    ctx.fillStyle = '#ffd166'; ctx.fillText(linkText, W / 2, ly);
-    ctx.fillRect(W / 2 - lw / 2, ly + 6, lw, 2);                                       // underline
-    titleLink = { x: W / 2 - lw / 2 - 10, y: ly - 14, w: lw + 20, h: 26 };
+    titleBtns = [];
   } else {
     ctx.fillStyle = 'rgba(8,4,16,.72)'; ctx.fillRect(0, H * .3, W, H * .62);   // the dark backing behind the controls: it replaces the soft band and covers exactly the same area
     ctx.font = '900 36px "Press Start 2P", monospace'; ctx.lineWidth = 9; ctx.strokeStyle = '#2b1040';
@@ -5442,6 +5540,7 @@ function updateRainbows(dt) {
 function startSmash() {
   const dx = player.x - boss.x, dy = player.y - boss.y, d = Math.hypot(dx, dy) || 1, ux = dx / d, uy = dy / d, nx = -uy, ny = ux;
   boss.powerT = 2; boss.shotAnim = 1; boss.cn = 0; boss.cyc = (boss.cyc || 0) + 1;
+  if (boss.spin) { boss.spin.pause = true; boss.spin.rot = 0; }   // mid-spin: he stands front-on for the pose and finishes the spin afterwards
   try { if (bossSfxCur) { const now = AC.currentTime; bossSfxCur.g.gain.setTargetAtTime(0, now, .03); bossSfxCur.s.stop(now + .15); } } catch (e) {}   // the last choral shot's tail is cut so the taiko stands alone
   if (!playChoralFlames()) playTaiko();   // the flames' own sound (the taiko only if it hasn't loaded)
   shake = Math.max(shake || 0, .6);
@@ -5477,7 +5576,11 @@ function updateBoss(dt) {
     if (k >= 1) boss.dash = null;
   } else if (boss.spin) {
     boss.spin.t += dt;
-    boss.spin.rot = boss.spin.t * 8 * Math.PI;   // four full turns in a second
+    if (boss.spin.pause) {                          // a flame attack interrupted the spin: when the pose ends he finishes it, from front-on, in whole turns
+      boss.spin.pause = false; boss.spin.t0 = boss.spin.t; boss.spin.turns = Math.max(1, Math.round((1 - boss.spin.t) * 4));
+    }
+    boss.spin.rot = boss.spin.t0 === undefined ? boss.spin.t * 8 * Math.PI                       // four full turns in a second
+      : (boss.spin.t - boss.spin.t0) / Math.max(.05, 1 - boss.spin.t0) * boss.spin.turns * 2 * Math.PI;
     if (boss.spin.t >= 1) {
       const to = bossDashTarget();
       boss.spin = null;
@@ -5539,7 +5642,7 @@ function updateBoss(dt) {
   }
 }
 
-const WITTY = { doctor: DIALOG.doctor_witty, builder: DIALOG.builder_witty, baby: DIALOG.baby_witty, banana: DIALOG.banana_witty, karate: DIALOG.karate_witty };
+const WITTY = { doctor: DIALOG.doctor_witty, builder: DIALOG.builder_witty, baby: DIALOG.baby_witty, banana: DIALOG.banana_witty, karate: DIALOG.karate_witty, cow: DIALOG.cow_witty, tree: DIALOG.tree_witty };
 const wittyCount = {};
 function wittyLine(s) {                                    // each of the three rotates through its own one-liners, even if it dies of happiness
   const k = s.baby ? 'baby' : s.look.role, lines = WITTY[k];
@@ -5547,7 +5650,7 @@ function wittyLine(s) {                                    // each of the three 
   wittyCount[k] = wittyCount[k] === undefined ? Math.floor(Math.random() * lines.length) : wittyCount[k] + 1;
   return lines[wittyCount[k] % lines.length];
 }
-const ROLE_LINES = { police: DIALOG.police_happy, fire: DIALOG.fire_happy, builder: DIALOG.builder_happy, doctor: DIALOG.doctor_happy, banana: DIALOG.banana_witty, karate: DIALOG.karate_witty };
+const ROLE_LINES = { police: DIALOG.police_happy, fire: DIALOG.fire_happy, builder: DIALOG.builder_happy, doctor: DIALOG.doctor_happy, banana: DIALOG.banana_witty, karate: DIALOG.karate_witty, cow: DIALOG.cow_witty, tree: DIALOG.tree_witty };
 const HUG_LINES = { grandma: DIALOG.grandma_hug, grandpa: DIALOG.grandpa_hug };
 
 function huggerStep(g, dt) {
@@ -5955,7 +6058,9 @@ function update(dt) {
 
 // ---------- input & loop ----------
 const keys = {};
+let dbgOpen = false;   // the title screen's debug menu is open: the game ignores the keys
 addEventListener('keydown', e => {
+  if (dbgOpen) { if (e.code === 'Escape') dbgClose(); return; }
   if (state === 'credits') {                                   // the introduction: the first key starts it (and lets sound play), Space or Enter skips it (never Esc or a function key)
     if (/^(F\d+|Shift|Control|Alt|Meta|CapsLock|Tab|Dead|Escape)$/.test(e.key)) return;
     if (crT < 0) beginCredits(); else if (e.code === 'Space' || e.code === 'Enter') endCredits();
@@ -5969,14 +6074,8 @@ addEventListener('keydown', e => {
     // only real keys start or advance the title: letters, digits, space, Enter and the arrows (never function or named keys like F1)
     if (e.key.length > 1 && !['Enter', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
     if (startFadeT >= 0) return;   // already leaving the title
-    const pick = { Digit1: 1, Digit2: 2, Digit3: 3, Numpad1: 1, Numpad2: 2, Numpad3: 3 }[e.code];   // press 1, 2 or 3 on the title screen to start on that level
-    if (titlePage === 0 && !pick && e.code !== 'KeyB' && e.code !== 'KeyT') { titlePage = 1; return; }   // the first key shows the controls
-    launchFromTitle(() => {
-      if (e.code === 'KeyB') { levelNo = 4; carryCandies = null; reset(); }   // B starts the bot battle
-      if (pick) { levelNo = pick; carryCandies = null; reset(); }
-      startGame();
-      if (e.code === 'KeyT') { levelNo = 2; carryCandies = null; reset(); state = 'ascend'; asT = 0; playSpiral(); }   // T: straight to the level 2 -> 3 tunnel scene
-    });
+    if (titlePage === 0) { titlePage = 1; return; }   // the first key shows the controls
+    launchFromTitle(() => { startGame(); });
     return;
   }
   if (state === 'opening') { if (e.code === 'Space' || e.code === 'Enter') endOpening(); return; }
@@ -5998,14 +6097,6 @@ addEventListener('keyup', e => { keys[e.code] = false; });
 cv.addEventListener('click', e => {
   if (state === 'credits') { if (crT < 0) beginCredits(); return; }
   if (state === 'title' && startFadeT >= 0) return;
-  if (state === 'title' && titlePage === 0 && TM) {            // touch: the level buttons
-    const { x, y } = cvXY(e);
-    for (const b of titleBtns) if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) { launchFromTitle(() => { levelNo = b.n; carryCandies = null; reset(); startGame(); }); return; }
-  }
-  if (state === 'title' && titlePage === 0 && titleLink) {
-    const { x, y } = cvXY(e);
-    if (x >= titleLink.x && x <= titleLink.x + titleLink.w && y >= titleLink.y && y <= titleLink.y + titleLink.h) { launchFromTitle(jumpToEnding); return; }
-  }
   if (state === 'title' && titlePage === 0) { titlePage = 1; return; }   // a click on the title shows the controls
   if (state === 'title') { launchFromTitle(startGame); return; }
   if (TM) {                                                    // touch: taps skip the cutscenes and retry after a loss; the buttons do the rest
@@ -6030,17 +6121,6 @@ function synthKey(code, key, down = true, up = true) {          // a tap or butt
   if (down) dispatchEvent(new KeyboardEvent('keydown', o));
   if (up) dispatchEvent(new KeyboardEvent('keyup', o));
 }
-function drawTitleBtns() {
-  const labels = [['LEVEL 1', 1], ['LEVEL 2', 2], ['LEVEL 3', 3], ['BOTS', 4]], bw = 104, gap = 10, y = H / 2 + 112, h = 28, x0 = W / 2 - (labels.length * bw + (labels.length - 1) * gap) / 2;
-  ctx.save(); ctx.font = '600 9px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  titleBtns = labels.map(([txt, n], i) => {
-    const x = x0 + i * (bw + gap);
-    ctx.fillStyle = 'rgba(8,4,16,.65)'; ctx.beginPath(); ctx.roundRect(x, y, bw, h, 8); ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#ffd166'; ctx.stroke();
-    ctx.fillStyle = '#fff'; ctx.fillText(txt, x + bw / 2, y + h / 2 + 1);
-    return { x, y, w: bw, h, n };
-  });
-  ctx.restore();
-}
 function drawTouchMap(y0) {                                      // the controls page on a touch screen: left stick moves, right stick looks, a tap gives candy
   const cy = y0 + 30;
   ctx.save(); ctx.lineWidth = 3; ctx.strokeStyle = '#fff'; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
@@ -6062,10 +6142,16 @@ function cvXY(e) {                                               // a click posi
   const r = cv.getBoundingClientRect();
   return isRot() ? { x: (e.clientY - r.top) * W / r.height, y: (r.right - e.clientX) * H / r.width } : { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height };
 }
-function fitTM() {                                               // always landscape: an upright phone gets the page turned a quarter turn
-  const vw = innerWidth, vh = innerHeight, rot = TM && vh > vw && Math.max(vw, vh) < 1300;
-  document.documentElement.classList.toggle('rot', rot);
-  const st = document.documentElement.style; st.setProperty('--vw', vw + 'px'); st.setProperty('--vh', vh + 'px'); st.setProperty('--lw', (rot ? vh : vw) + 'px'); st.setProperty('--lh', (rot ? vw : vh) + 'px');
+let flipWait = false;   // a phone held upright: play waits (behind the "turn your phone sideways" screen) until it is flipped into landscape
+function fitTM() {
+  const vw = innerWidth, vh = innerHeight, upright = TM && vh > vw && Math.max(vw, vh) < 1300;
+  document.documentElement.classList.remove('rot');
+  const st = document.documentElement.style; st.setProperty('--vw', vw + 'px'); st.setProperty('--vh', vh + 'px'); st.setProperty('--lw', vw + 'px'); st.setProperty('--lh', vh + 'px');
+  if (upright !== flipWait) {
+    flipWait = upright; const fl = document.getElementById('flip'); if (fl) fl.classList.toggle('show', upright);
+    releaseTouch();
+    try { if (upright) SPIRAL_SFX.pause(); else if (state === 'ascend') { const pr = SPIRAL_SFX.play(); if (pr && pr.catch) pr.catch(() => {}); } } catch (e) {}
+  }
 }
 function resetStick(el, nub) { nub.style.transform = ''; el.style.left = el.style.top = el.style.right = el.style.bottom = ''; }
 function releaseTouch() {
@@ -6150,6 +6236,8 @@ let last = performance.now(), miniTick = 0;
 function loop(now) {
   let rem = Math.min(.1, (now - last) / 1000);   // real elapsed time, simulated in small steps
   last = now;
+  if (window.dbgSync) dbgSync();
+  if (flipWait) { requestAnimationFrame(loop); return; }   // upright phone: nothing moves until it is turned sideways
   try {
     bossMusicFade();
     if (AC) { loadTrack(1); if (trackBuf[1]) { loadTrack(2); loadTrack('2b'); loadTrack(3); loadTaiko(); loadBossSfx(); loadPlayerShot(); } }   // decode the recorded music ahead of time so level 1 starts on the first frame
@@ -6172,13 +6260,13 @@ function loop(now) {
     else render();
     
     if (state === 'ascend' && levelNo === 1) { ctx.fillStyle = `rgba(255,255,255,${Math.min(1, asT / .7)})`; ctx.fillRect(0, 0, W, H); }   // fade to white, then the next level
-    if (state === 'intro' && levelNo === 2 && introT < 3.2) drawLevelCard(introT, 'Level 2', 3.2, 'Did You Bring Enough To Share?');
+    if (state === 'intro' && levelNo === 2 && introT < 3.2) drawLevelCard(introT, 'Level 2', 3.2, 'Farmer Brownie - Jolly as a Rancher');
     if (state === 'climb') { ctx.fillStyle = `rgba(20,10,40,${Math.sin(Math.min(1, climbT / 1.6) * Math.PI) * .75})`; ctx.fillRect(0, 0, W, H); }
     if (startFadeT >= 0) {                                   // the white-out: quick up on the sound's opening hit, then a slow clearing as it dies away
       const q = startFadeT < START_OUT ? startFadeT / START_OUT : 1 - (startFadeT - START_OUT) / START_IN;
       ctx.fillStyle = `rgba(255,255,255,${Math.max(0, Math.min(1, startFadeT < START_OUT ? q : q * q))})`; ctx.fillRect(0, 0, W, H);
     }
-    if (state === 'play' && levelNo === 1 && t - levelCardAt < 2.2) drawLevelCard(t - levelCardAt, 'Level 1', 2.2, 'Farmer Brownie - Jolly as a Rancher');   // on top of the white-out
+    if (state === 'play' && levelNo === 1 && t - levelCardAt < 2.2) drawLevelCard(t - levelCardAt, 'Level 1', 2.2, 'Did You Bring Enough To Share?');   // on top of the white-out
     if ((miniTick++ & 1) === 0) drawMini();
     updateHUD();
   } catch (err) {
@@ -6186,6 +6274,29 @@ function loop(now) {
     msgText = 'Glitch: ' + (err && err.message ? err.message : err); msgT = 1;
   }
   requestAnimationFrame(loop);
+}
+
+// ---------- title screen: the gear opens the debug menu (jump to a level or a scene) ----------
+{
+  const gear = document.getElementById('dbgGear'), menu = document.getElementById('dbgMenu');
+  const open = () => { dbgOpen = true; menu.classList.add('show'); };
+  window.dbgClose = () => { dbgOpen = false; menu.classList.remove('show'); };
+  const go = id => {
+    dbgClose();
+    const fresh = fn => launchFromTitle(() => { carryCandies = null; fn(); startGame(); });
+    if (id === 'l1') fresh(() => { levelNo = 1; reset(); });
+    else if (id === 'l2') fresh(() => { levelNo = 2; reset(); });
+    else if (id === 'l3') fresh(() => { levelNo = 3; bossIntroSeen = true; reset(); });                                   // straight into the arena
+    else if (id === 'bear') fresh(() => { levelNo = 3; bossIntroSeen = false; reset(); });                               // the bear's introduction
+    else if (id === 'tunnel') launchFromTitle(() => { carryCandies = null; startGame(); levelNo = 2; reset(); state = 'ascend'; asT = 0; playSpiral(); });   // the level 2 -> 3 tunnel
+    else if (id === 'end') launchFromTitle(jumpToEnding);
+    else if (id === 'credits') { titlePage = 0; state = 'credits'; beginCredits(); }
+  };
+  gear.addEventListener('click', open);
+  menu.addEventListener('click', e => { const b = e.target.closest('[data-dbg]'); if (b) { b.dataset.dbg === 'close' ? dbgClose() : go(b.dataset.dbg); } else if (e.target === menu) dbgClose(); });
+  for (const el of [gear, menu]) for (const ev of ['pointerdown', 'pointerup', 'click', 'mousedown']) el.addEventListener(ev, e => e.stopPropagation());   // taps here never reach the game
+  gear.addEventListener('click', e => e.stopPropagation());
+  window.dbgSync = () => { const on = state === 'title' && startFadeT < 0 && !flipWait; gear.classList.toggle('show', on); if (!on && dbgOpen && state !== 'title') dbgClose(); };
 }
 drawFace(0);
 requestAnimationFrame(loop);
