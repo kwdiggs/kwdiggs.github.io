@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#160c1e">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <title>MOOD</title>
 <style>
@@ -92,6 +93,13 @@
   #dbgGear.show{display:flex}
   #dbgGear svg{width:24px;height:24px;transition:transform .5s}
   #dbgGear:hover svg{transform:rotate(90deg)}
+  /* ---- full screen button (F key too) ---- */
+  #fsBtn{position:fixed;top:12px;left:12px;z-index:60;width:40px;height:40px;padding:0;border-radius:50%;border:3px solid #fff;background:rgba(43,16,64,.82);box-shadow:0 0 0 2px #ff8fb1,0 4px 14px rgba(0,0,0,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.6;transition:opacity .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+  #fsBtn:hover,#fsBtn:focus-visible{opacity:1}
+  #fsBtn svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  #fsBtn .x{display:none} #fsBtn.on .e{display:none} #fsBtn.on .x{display:block}
+  html.tm #fsBtn{top:max(6px,env(safe-area-inset-top,0px));left:calc(env(safe-area-inset-left,0px) + 6px);width:32px;height:32px;border-width:2px}
+  html.fs:not(.tm) #stage,html.fs:not(.tm) #bar{width:min(98vw,calc((100vh - 90px) * 1.6))}
   #dbgMenu{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;background:rgba(10,4,20,.74);font-family:"Press Start 2P",monospace;color:#fff}
   #dbgMenu.show{display:flex}
   #dbgMenu .dbg-card{position:relative;width:min(92vw,460px);max-height:92vh;overflow:auto;box-sizing:border-box;padding:18px 18px 16px;border-radius:16px;background:#2a1838;border:3px solid #ff8fb1;box-shadow:0 0 0 3px #2b1040,0 20px 60px rgba(0,0,0,.65)}
@@ -114,6 +122,7 @@
   </div></div>
   <div class="bk-bar"><div class="bk-blk"></div><div class="bk-pill"></div><div class="bk-blk"></div></div>
 </div>
+<button id="fsBtn" type="button" aria-label="Full screen"><svg viewBox="0 0 24 24"><g class="e"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></g><g class="x"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></g></svg></button>
 <button id="dbgGear" type="button" aria-label="Debug menu"><svg viewBox="0 0 24 24" fill="#fff"><path d="M19.4 13a7.7 7.7 0 0 0 .1-1 7.7 7.7 0 0 0-.1-1l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.3 7.3 0 0 0-1.7-1l-.4-2.6a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.4 2.6a7.3 7.3 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.5a.5.5 0 0 0 .1.6L4.6 11a7.7 7.7 0 0 0-.1 1 7.7 7.7 0 0 0 .1 1l-2.1 1.6a.5.5 0 0 0-.1.6l2 3.5a.5.5 0 0 0 .6.2l2.5-1a7.3 7.3 0 0 0 1.7 1l.4 2.6a.5.5 0 0 0 .5.4h4a.5.5 0 0 0 .5-.4l.4-2.6a7.3 7.3 0 0 0 1.7-1l2.5 1a.5.5 0 0 0 .6-.2l2-3.5a.5.5 0 0 0-.1-.6zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg></button>
 <div id="dbgMenu" role="dialog" aria-modal="true" aria-label="Debug menu">
   <div class="dbg-card">
@@ -6296,6 +6305,22 @@ function loop(now) {
   menu.addEventListener('click', e => { const b = e.target.closest('[data-dbg]'); if (b) { b.dataset.dbg === 'close' ? dbgClose() : go(b.dataset.dbg); } else if (e.target === menu) dbgClose(); });
   for (const el of [gear, menu]) for (const ev of ['pointerdown', 'pointerup', 'click', 'mousedown']) el.addEventListener(ev, e => e.stopPropagation());   // taps here never reach the game
   gear.addEventListener('click', e => e.stopPropagation());
+  // full screen: the button toggles it on desktop and mobile
+  const btn = document.getElementById('fsBtn'), de = document.documentElement;
+  const req = de.requestFullscreen || de.webkitRequestFullscreen, exit = document.exitFullscreen || document.webkitExitFullscreen;
+  const isFS = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+  if (!req) btn.style.display = 'none';                                  // e.g. iPhone Safari has no full screen for pages
+  const sync = () => {
+    const on = isFS(); de.classList.toggle('fs', on); btn.classList.toggle('on', on); btn.setAttribute('aria-label', on ? 'Exit full screen' : 'Full screen');
+    try { if (on && TM && screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {}); else if (!on && screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (x) {}
+  };
+  document.addEventListener('fullscreenchange', sync); document.addEventListener('webkitfullscreenchange', sync);
+  window.toggleFS = () => {
+    tTriedFS = true; try { if (AC && AC.state === 'suspended') AC.resume(); } catch (x) {}
+    try { const pr = isFS() ? exit.call(document) : req.call(de); if (pr && pr.catch) pr.catch(() => {}); } catch (x) {}
+  };
+  for (const ev of ['pointerdown', 'pointerup', 'mousedown']) btn.addEventListener(ev, e => e.stopPropagation());
+  btn.addEventListener('click', e => { e.stopPropagation(); window.toggleFS(); btn.blur(); });
   window.dbgSync = () => { const on = state === 'title' && startFadeT < 0 && !flipWait; gear.classList.toggle('show', on); if (!on && dbgOpen && state !== 'title') dbgClose(); };
 }
 drawFace(0);
